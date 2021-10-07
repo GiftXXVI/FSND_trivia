@@ -3,10 +3,24 @@ from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
+from math import ceil
 
 from models import setup_db, Question, Category
 
 QUESTIONS_PER_PAGE = 10
+
+
+def paginate_questions(page, questions):
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+
+    fquestions = [question.format() for question in questions]
+    pquestions = fquestions[start:end]
+    lquestions = len(fquestions)
+    plquestions = len(pquestions)
+    npages = ceil(lquestions/QUESTIONS_PER_PAGE)
+
+    return pquestions, lquestions, plquestions, npages
 
 
 def create_app(test_config=None):
@@ -48,7 +62,6 @@ def create_app(test_config=None):
                 'categories': fcategories,
                 'total_categories': lcategories
             })
-
     '''
   @TODO: 
   Create an endpoint to handle GET requests for questions, 
@@ -61,7 +74,25 @@ def create_app(test_config=None):
   ten questions per page and pagination at the bottom of the screen for three pages.
   Clicking on the page numbers should update the questions. 
   '''
-
+    @app.route('/questions')
+    def get_questions():
+        questions = Question.query.order_by(Question.id).all()
+        if len(questions) == 0:
+            return abort(404)
+        else:
+            page = request.args.get('page', 1, type=int)
+            paginated_questions, length_questions, page_size, num_pages = paginate_questions(
+                page, questions)
+            return jsonify({
+                'success': True,
+                'page_num': page,
+                'curr_page_size': page_size,
+                'num_pages': num_pages,
+                'total_questions': length_questions,
+                'questions': paginated_questions,
+                'current_category': '',
+                'categories': ''
+            })
     '''
   @TODO: 
   Create an endpoint to DELETE question using a question ID. 
