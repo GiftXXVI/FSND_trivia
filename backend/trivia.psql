@@ -30,7 +30,7 @@ CREATE TABLE public.categories (
 );
 
 
-ALTER TABLE public.categories OWNER TO caryn;
+ALTER TABLE public.categories OWNER TO postgres;
 
 --
 -- Name: categories_id_seq; Type: SEQUENCE; Schema: public; Owner: caryn
@@ -45,7 +45,7 @@ CREATE SEQUENCE public.categories_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.categories_id_seq OWNER TO caryn;
+ALTER TABLE public.categories_id_seq OWNER TO postgres;
 
 --
 -- Name: categories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: caryn
@@ -67,7 +67,7 @@ CREATE TABLE public.questions (
 );
 
 
-ALTER TABLE public.questions OWNER TO caryn;
+ALTER TABLE public.questions OWNER TO postgres;
 
 --
 -- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: caryn
@@ -82,7 +82,7 @@ CREATE SEQUENCE public.questions_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.questions_id_seq OWNER TO caryn;
+ALTER TABLE public.questions_id_seq OWNER TO postgres;
 
 --
 -- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: caryn
