@@ -76,6 +76,8 @@ class Question(db.Model):
             'difficulty': self.difficulty
         }
 
+    def dispose(self):
+        db.session.close()
 
 '''
 Category
@@ -98,5 +100,5 @@ class Category(db.Model):
             'type': self.type
         }
 
-    def altform(self):
-        return str(self.id) + ":" + self.type
+    def dispose(self):
+        db.session.close()
