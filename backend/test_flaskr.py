@@ -238,7 +238,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertFalse(data['created'])
         self.assertTrue(data['message'],'Bad Request')
 
-    def test_create_question_missing_category():
+    def test_create_question_missing_fields():
         response = self.client().post('/questions', json=bad_question)
         data = json.loads(response.data)
 
