@@ -2,12 +2,14 @@ from operator import not_
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from sqlalchemy import not_
 from flask_cors import CORS
 import random
 from math import ceil
 
-from models import setup_db, Question, Category
+
+from models import setup_db, Question, Category, get_db
 
 QUESTIONS_PER_PAGE = 10
 
@@ -30,6 +32,7 @@ def prepare_questions(request, questions, lcategory):
     paginated_questions, length_questions, page_size, num_pages = paginate_questions(
         page, questions)
     ccategory = paginated_questions[len(paginated_questions) - 1]['category']
+    
     return jsonify({
         'success': True,
         'page_num': page,
@@ -37,7 +40,7 @@ def prepare_questions(request, questions, lcategory):
         'num_pages': num_pages,
         'total_questions': length_questions,
         'questions': paginated_questions,
-        'current_category': ccategory,
+        'current_category': lcategory[ccategory],
         'categories': lcategory
     })
 
@@ -46,6 +49,8 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
+    db = get_db()
+    migrate = Migrate(app, db)
 
     '''
   @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
@@ -75,12 +80,8 @@ def create_app(test_config=None):
         if lcategories == 0:
             abort(404)
         else:
-            fcategories = [category.format() for category in categories]
-            return jsonify({
-                'success': True,
-                'categories': fcategories,
-                'total_categories': lcategories
-            })
+            fcats = {cat.id: cat.type for cat in categories}
+            return jsonify({"categories": fcats})
     '''
   @TODO:
   Create an endpoint to handle GET requests for questions,
@@ -101,15 +102,16 @@ def create_app(test_config=None):
 
         categories = Question.query.order_by(
             Question.category, Question.id).with_entities(Question.category).all()
-        
 
-        lcategory = list(set([item.category for item in categories]))
+        lcategory = list(set([Category.query.filter_by(
+            id=item.category).one_or_none() for item in categories]))
+        fcats = {cat.id: cat.type for cat in lcategory}
         #lcategory = list(set([item.cat.type for item in questions]))
         if len(questions) == 0:
             return abort(404)
         else:
             prepared_questions = prepare_questions(
-                request, questions, lcategory)
+                request, questions, fcats)
             return prepared_questions
     '''
   @TODO:
@@ -156,7 +158,7 @@ def create_app(test_config=None):
             try:
                 question = Question(question=question, answer=answer,
                                     difficulty=difficulty, category=category)
-                #question = Question(question=question, answer=answer,
+                # question = Question(question=question, answer=answer,
                 #                    difficulty=difficulty, category_id=category)
                 question.insert()
                 return jsonify({
@@ -185,7 +187,7 @@ def create_app(test_config=None):
             try:
                 questions = Question.query.filter(Question.question.ilike(
                     fsearch)).order_by(Question.category, Question.id).all()
-                #questions = Question.query.filter(Question.question.ilike(
+                # questions = Question.query.filter(Question.question.ilike(
                 #    fsearch)).join(Category).order_by(Category.id, Question.id).all()
                 categories = Question.query.filter(Question.question.ilike(fsearch)).order_by(
                     Question.category, Question.id).with_entities(Question.category).distinct().all()
@@ -211,7 +213,7 @@ def create_app(test_config=None):
     def get_cat_questions(category_id):
         questions = Question.query.filter(Question.category == category_id).order_by(
             Question.category, Question.id).all()
-        #questions = Question.query.filter(Question.category == category_id).order_by(
+        # questions = Question.query.filter(Question.category == category_id).order_by(
         #    Question.category, Question.id).all()
         categories = Question.query.filter(Question.category == category_id).order_by(
             Question.category, Question.id).with_entities(Question.category).distinct().all()
@@ -244,7 +246,7 @@ def create_app(test_config=None):
             quiz_category = body.get('quiz_category', None)
             questions = Question.query.filter(
                 not_(Question.id.in_(previous_questions))).all()
-            #questions = Question.query.join(Category).filter(
+            # questions = Question.query.join(Category).filter(
             #    not_(Question.id.in_(previous_questions))).filter(Category.id==quiz_category).all()
             if len(questions) == 0:
                 abort(404)

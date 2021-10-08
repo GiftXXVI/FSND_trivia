@@ -8,12 +8,12 @@ database_path = "postgresql://{}:{}@{}/{}".format(
     "postgres", "postgres", "localhost:5432", database_name
 )
 
-#flask db init
-#flask db migrate -m "Add relationship between question and category."
-#UPDATE question AS q SET q.category_id=(SELECT c.id FROM category AS c WHERE c.type=q.category LIMIT 1)
+# flask db init
+# flask db migrate -m "Add relationship between question and category."
+# UPDATE question AS q SET q.category_id=(SELECT c.id FROM category AS c WHERE c.type=q.category LIMIT 1)
 #op.execute('UPDATE question AS q SET q.category_id=(SELECT c.id FROM category AS c WHERE c.type=q.category LIMIT 1)')
 #op.drop_column('question', 'category')
-#flask db upgrade
+# flask db upgrade
 
 db = SQLAlchemy()
 
@@ -31,6 +31,10 @@ def setup_db(app, database_path=database_path):
     db.create_all()
 
 
+def get_db():
+    return db
+
+
 '''
 Question
 
@@ -45,7 +49,6 @@ class Question(db.Model):
     answer = Column(String)
     category = Column(String)
     difficulty = Column(Integer)
-    #category_id = db.Column(db.Integer, db.ForeignKey('categories.id'), nullable=False)
 
     def __init__(self, question, answer, category, difficulty):
         self.question = question
@@ -85,7 +88,6 @@ class Category(db.Model):
 
     id = Column(Integer, primary_key=True)
     type = Column(String)
-    #questions = db.relationship('Question', backref='cat', lazy=True)
 
     def __init__(self, type):
         self.type = type
@@ -95,3 +97,6 @@ class Category(db.Model):
             'id': self.id,
             'type': self.type
         }
+
+    def altform(self):
+        return str(self.id) + ":" + self.type
