@@ -101,21 +101,24 @@ def create_app(test_config=None):
   '''
     @app.route('/questions', methods=['GET'])
     def get_questions():
-        questions = Question.query.order_by(
-            Question.category, Question.id).all()
+        try:
+            questions = Question.query.order_by(
+                Question.category, Question.id).all()
 
-        categories = Question.query.order_by(
-            Question.category, Question.id).with_entities(Question.category).all()
+            categories = Question.query.order_by(
+                Question.category, Question.id).with_entities(Question.category).all()
 
-        lcategory = list(set([Category.query.filter_by(
-            id=item.category).one_or_none() for item in categories]))
-        fcats = {cat.id: cat.type for cat in lcategory}
-        if len(questions) == 0:
-            return abort(404)
-        else:
-            prepared_questions = prepare_questions(
-                request, questions, fcats)
-            return prepared_questions
+            lcategory = list(set([Category.query.filter_by(
+                id=item.category).one_or_none() for item in categories]))
+            fcats = {cat.id: cat.type for cat in lcategory}
+            if len(questions) == 0:
+                return abort(404)
+            else:
+                prepared_questions = prepare_questions(
+                    request, questions, fcats)
+                return prepared_questions
+        except:
+            abort(500)
     '''
   @TODO:
   Create an endpoint to DELETE question using a question ID.
@@ -284,4 +287,11 @@ def create_app(test_config=None):
             'error': 400,
             'message': 'Bad Request'
         }),400
+    @ app.errorhandler(500)
+    def error_500(error):
+        return jsonify({
+            'success': False,
+            'error': 500,
+            'message': 'Internal Server Error'
+        }),500
     return app
