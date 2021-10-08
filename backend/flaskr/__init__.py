@@ -80,14 +80,14 @@ def create_app(test_config=None):
   '''
     @app.route('/categories', methods=['GET'])
     def get_categories():
-        try:    
+        try:
             categories = Category.query.order_by(Category.id).all()
             lcategories = len(categories)
             if lcategories == 0:
                 abort(404)
             else:
                 fcats = {cat.id: cat.type for cat in categories}
-                return jsonify({"categories": fcats})
+                return jsonify({"success": True, "categories": fcats})
         except:
             abort(500)
     '''
@@ -131,7 +131,7 @@ def create_app(test_config=None):
   '''
     @app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
-        question = Question.query.filter_by(
+        question = Question.query.filter(
             Question.id == question_id).one_or_none()
         if question is None:
             abort(404)
@@ -275,7 +275,7 @@ def create_app(test_config=None):
             'success': False,
             'error': 404,
             'message': 'Not Found'
-        }),404
+        }), 404
 
     @ app.errorhandler(422)
     def error_422(error):
@@ -283,7 +283,7 @@ def create_app(test_config=None):
             'success': False,
             'error': 404,
             'message': 'Unprocessable Entity'
-        }),422
+        }), 422
 
     @ app.errorhandler(400)
     def error_400(error):
@@ -291,12 +291,13 @@ def create_app(test_config=None):
             'success': False,
             'error': 400,
             'message': 'Bad Request'
-        }),400
+        }), 400
+
     @ app.errorhandler(500)
     def error_500(error):
         return jsonify({
             'success': False,
             'error': 500,
             'message': 'Internal Server Error'
-        }),500
+        }), 500
     return app
