@@ -103,7 +103,6 @@ def create_app(test_config=None):
     def get_questions():
         questions = Question.query.order_by(
             Question.category, Question.id).all()
-        #questions = Question.query.join(Category).order_by(Category.id, Question.id).all()
 
         categories = Question.query.order_by(
             Question.category, Question.id).with_entities(Question.category).all()
@@ -111,7 +110,6 @@ def create_app(test_config=None):
         lcategory = list(set([Category.query.filter_by(
             id=item.category).one_or_none() for item in categories]))
         fcats = {cat.id: cat.type for cat in lcategory}
-        #lcategory = list(set([item.cat.type for item in questions]))
         if len(questions) == 0:
             return abort(404)
         else:
@@ -158,13 +156,10 @@ def create_app(test_config=None):
             question = body.get('question', None)
             answer = body.get('answer', None)
             difficulty = body.get('difficulty', None)
-            # redesign model and run migration to relate question to category
             category = body.get('category', None)
             try:
                 question = Question(question=question, answer=answer,
                                     difficulty=difficulty, category=category)
-                # question = Question(question=question, answer=answer,
-                #                    difficulty=difficulty, category_id=category)
                 question.insert()
                 return jsonify({
                     'success': True
@@ -192,14 +187,11 @@ def create_app(test_config=None):
             try:
                 questions = Question.query.filter(Question.question.ilike(
                     fsearch)).order_by(Question.category, Question.id).all()
-                # questions = Question.query.filter(Question.question.ilike(
-                #    fsearch)).join(Category).order_by(Category.id, Question.id).all()
                 categories = Question.query.filter(Question.question.ilike(fsearch)).order_by(
                     Question.category, Question.id).with_entities(Question.category).distinct().all()
                 lcategory = list(set([Category.query.filter_by(
                     id=item.category).one_or_none() for item in categories]))
                 fcats = {cat.id: cat.type for cat in lcategory}
-                #lcategory = list(set([item.cat.type for item in questions]))
                 if len(questions) == 0:
                     return abort(404)
                 else:
@@ -220,15 +212,12 @@ def create_app(test_config=None):
     def get_cat_questions(category_id):
         questions = Question.query.filter(Question.category == category_id).order_by(
             Question.category, Question.id).all()
-        # questions = Question.query.filter(Question.category == category_id).order_by(
-        #    Question.category, Question.id).all()
         categories = Question.query.order_by(
             Question.category, Question.id).with_entities(Question.category).all()
 
         lcategory = list(set([Category.query.filter_by(
             id=item.category).one_or_none() for item in categories]))
         fcats = {cat.id: cat.type for cat in lcategory}
-        #lcategory = list(set([item.cat.type for item in questions]))
         if len(questions) == 0:
             return abort(404)
         else:
@@ -256,8 +245,6 @@ def create_app(test_config=None):
             quiz_category = body.get('quiz_category', None)
             questions = Question.query.filter(
                 not_(Question.id.in_(previous_questions))).all()
-            # questions = Question.query.join(Category).filter(
-            #    not_(Question.id.in_(previous_questions))).filter(Category.id==quiz_category).all()
             if len(questions) == 0:
                 abort(404)
             else:
