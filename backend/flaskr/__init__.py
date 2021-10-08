@@ -138,6 +138,7 @@ def create_app(test_config=None):
         else:
             try:
                 question.delete()
+                question.dispose()
                 return jsonify({
                     'success': True
                 })
@@ -167,6 +168,7 @@ def create_app(test_config=None):
                 question = Question(question=question, answer=answer,
                                     difficulty=difficulty, category=category)
                 question.insert()
+                question.dispose()
                 return jsonify({
                     'success': True
                 })
