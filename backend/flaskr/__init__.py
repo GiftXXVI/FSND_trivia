@@ -140,7 +140,8 @@ def create_app(test_config=None):
                 question.delete()
                 question.dispose()
                 return jsonify({
-                    'success': True
+                    'success': True,
+                    'deleted': question_id
                 })
             except:
                 question.rollback()
@@ -170,6 +171,7 @@ def create_app(test_config=None):
                 question = Question(question=question, answer=answer,
                                     difficulty=difficulty, category=category)
                 question.insert()
+                question.refresh()
                 question.dispose()
                 return jsonify({
                     'success': True,
@@ -190,7 +192,7 @@ def create_app(test_config=None):
   Try using the word "title" to start.
   '''
     @app.route('/questions/search', methods=['POST'])
-    def search_posts():
+    def search_questions():
         body = request.get_json()
         if body is None:
             abort(400)
@@ -257,7 +259,7 @@ def create_app(test_config=None):
             previous_questions = body.get('previous_questions', [])
             quiz_category = body.get('quiz_category', None)
             questions = Question.query.filter(
-                not_(Question.id.in_(previous_questions))).all()
+                not_(Question.id.in_(previous_questions))).filter(Question.category==quiz_category).all()
             if len(questions) == 0:
                 abort(404)
             else:

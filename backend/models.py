@@ -75,10 +75,10 @@ class Question(db.Model):
             'category': self.category,
             'difficulty': self.difficulty
         }
-    
-    def rollback():
+
+    def rollback(self):
         db.session.rollback()
-        
+
     def refresh(self):
         db.session.refresh(self)
 
@@ -107,10 +107,10 @@ class Category(db.Model):
             'type': self.type
         }
 
-    def rollback():
+    def rollback(self):
         db.session.rollback()
 
-    def refresh():
+    def refresh(self):
         db.session.refresh(self)
 
     def dispose(self):
