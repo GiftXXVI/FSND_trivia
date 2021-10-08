@@ -26,6 +26,10 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
+        
+        self.new_question = {'question':'In what state of matter are atoms most tightly packed?', 'answer':'Solid', 'category': '1','difficulty':'2'}
+        self.bad_cat_question = {'question':'What is the nearest planet to the sun?', 'answer':'Mercury', 'category': '100','difficulty':'2'}
+        self.bad_question = {'question':'Which of Newton\'s laws states that for every action, there\'s and equal and opposite reaction?', 'answer':'The third law of motion'}
 
     def tearDown(self):
         """Executed after reach test"""
@@ -40,7 +44,7 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().get('/categories')
         data = json.loads(response.data)
 
-        cats = Categories.query.count()
+        cats = Category.query.count()
 
         if cats > 0:
             # test response code
@@ -52,6 +56,7 @@ class TriviaTestCase(unittest.TestCase):
         else:
             # test response code
             self.assertEqual(response.status_code, 404)
+
             # test response body
             self.assertEqual(data['success'], False)
             self.assertFalse(data['categories'])
@@ -61,79 +66,190 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().get('/questions')
         data = json.loads(response.data)
 
-        # test response code
-        self.assertEqual(response.status_code, 200)
+        qns = Question.query.count()
 
-        # test response body
-        self.assertEqual(data['success'], True)
-        self.assertEqual(
-            len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-        self.assertTrue(data['page_num'])
-        self.assertTrue(data['curr_page_size'])
-        self.assertTrue(data['num_pages'])
-        self.assertTrue(data['totalQuestions'])
-        self.assertTrue(data['questions'])
-        self.assertTrue(data['currentCategory'])
-        self.assertTrue(data['categories'])
+        if qns > 0:
+            # test response code
+            self.assertEqual(response.status_code, 200)
+
+            # test response body
+            self.assertEqual(data['success'], True)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertTrue(data['page_num'])
+            self.assertTrue(data['curr_page_size'])
+            self.assertTrue(data['num_pages'])
+            self.assertTrue(data['totalQuestions'])
+            self.assertTrue(data['questions'])
+            self.assertTrue(data['currentCategory'])
+            self.assertTrue(data['categories'])
+        else:
+            # test response code
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertFalse(data['page_num'])
+            self.assertFalse(data['curr_page_size'])
+            self.assertFalse(data['num_pages'])
+            self.assertFalse(data['totalQuestions'])
+            self.assertFalse(data['questions'])
+            self.assertFalse(data['currentCategory'])
+            self.assertFalse(data['categories'])
 
     def test_get_paginated_questions_high_page_num(self):
         response = self.client().get('/questions?page=2000000000000000')
         data = json.loads(response.data)
 
-        # test response code
-        self.assertEqual(response.status_code, 200)
+        qns = Question.query.count()
 
-        # test response body
-        self.assertEqual(data['success'], True)
-        self.assertEqual(
-            len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-        self.assertTrue(data['page_num'])
-        self.assertFalse(data['curr_page_size'])
-        self.assertTrue(data['num_pages'])
-        self.assertTrue(data['totalQuestions'])
-        self.assertFalse(data['questions'])
-        self.assertFalse(data['currentCategory'])
-        self.assertTrue(data['categories'])
+        if qns > 0:
+            # test response code
+            self.assertEqual(response.status_code, 200)
+
+            # test response body
+            self.assertEqual(data['success'], True)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertTrue(data['page_num'])
+            self.assertFalse(data['curr_page_size'])
+            self.assertTrue(data['num_pages'])
+            self.assertTrue(data['totalQuestions'])
+            self.assertFalse(data['questions'])
+            self.assertFalse(data['currentCategory'])
+            self.assertTrue(data['categories'])
+        else:
+            # test response code
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertFalse(data['page_num'])
+            self.assertFalse(data['curr_page_size'])
+            self.assertFalse(data['num_pages'])
+            self.assertFalse(data['totalQuestions'])
+            self.assertFalse(data['questions'])
+            self.assertFalse(data['currentCategory'])
+            self.assertFalse(data['categories'])
 
     def test_get_paginated_questions_low_page_num(self):
         response = self.client().get('/questions?page=0')
         data = json.loads(response.data)
 
-        # test response code
-        self.assertEqual(response.status_code, 200)
+        qns = Question.query.count()
 
-        # test response body
-        self.assertEqual(data['success'], True)
-        self.assertEqual(
-            len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-        self.assertFalse(data['page_num'])
-        self.assertFalse(data['curr_page_size'])
-        self.assertTrue(data['num_pages'])
-        self.assertTrue(data['totalQuestions'])
-        self.assertFalse(data['questions'])
-        self.assertFalse(data['currentCategory'])
-        self.assertTrue(data['categories'])
+        if qns > 0:
+            # test response code
+            self.assertEqual(response.status_code, 200)
+
+            # test response body
+            self.assertEqual(data['success'], True)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertFalse(data['page_num'])
+            self.assertFalse(data['curr_page_size'])
+            self.assertTrue(data['num_pages'])
+            self.assertTrue(data['totalQuestions'])
+            self.assertFalse(data['questions'])
+            self.assertFalse(data['currentCategory'])
+            self.assertTrue(data['categories'])
+        else:
+            # test response code
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertFalse(data['page_num'])
+            self.assertFalse(data['curr_page_size'])
+            self.assertFalse(data['num_pages'])
+            self.assertFalse(data['totalQuestions'])
+            self.assertFalse(data['questions'])
+            self.assertFalse(data['currentCategory'])
+            self.assertFalse(data['categories'])
 
     def test_get_paginated_questions_decimal_page_num(self):
         response = self.client().get('/questions?page=1.53')
         data = json.loads(response.data)
 
-        # test response code
+        qns = Question.query.count()
+
+        if qns > 0:
+
+            # test response code
+            self.assertEqual(response.status_code, 200)
+
+            # test response body
+            self.assertEqual(data['success'], True)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertTrue(data['page_num'])
+            self.assertTrue(data['curr_page_size'])
+            self.assertTrue(data['num_pages'])
+            self.assertTrue(data['totalQuestions'])
+            self.assertTrue(data['questions'])
+            self.assertTrue(data['currentCategory'])
+            self.assertTrue(data['categories'])
+        else:
+            # test response code
+            self.assertEqual(response.status_code, 404)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(
+                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
+            self.assertFalse(data['page_num'])
+            self.assertFalse(data['curr_page_size'])
+            self.assertFalse(data['num_pages'])
+            self.assertFalse(data['totalQuestions'])
+            self.assertFalse(data['questions'])
+            self.assertFalse(data['currentCategory'])
+            self.assertFalse(data['categories'])
+
+    def test_create_question():
+        response = self.client().post('/questions', json=new_question)
+        data = json.loads(response.data)
+
+        #test response code
         self.assertEqual(response.status_code, 200)
 
-        # test response body
+        #test response body
         self.assertEqual(data['success'], True)
-        self.assertEqual(
-            len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-        self.assertTrue(data['page_num'])
-        self.assertTrue(data['curr_page_size'])
-        self.assertTrue(data['num_pages'])
-        self.assertTrue(data['totalQuestions'])
-        self.assertTrue(data['questions'])
-        self.assertTrue(data['currentCategory'])
-        self.assertTrue(data['categories'])
+        self.assertTrue(data['created'])
+    
+    def test_create_question_empty_body():
+        response = self.client().post('/questions')
+        data = json.loads(response.data)
 
+        #test response code
+        self.assertEqual(response.status_code, 400)
 
+        #test response body
+        self.assertEqual(data['success'], False)
+        self.assertFalse(data['created'])
+        self.assertTrue(data['message'],'Bad Request')
+
+    def test_create_question_invalid_category():
+        response = self.client().post('/questions', json=bad_cat_question)
+        data = json.loads(response.data)
+
+        #test response code
+        self.assertEqual(response.status_code, 422)
+
+        #test response body
+        self.assertEqual(data['success'], False)
+        self.assertFalse(data['created'])
+        self.assertTrue(data['message'],'Bad Request')
+
+    def test_create_question_missing_category():
+        response = self.client().post('/questions', json=bad_question)
+        data = json.loads(response.data)
+
+        #test response code
+        self.assertEqual(response.status_code, 400)
+
+        #test response body
+        self.assertEqual(data['success'], False)
+        self.assertFalse(data['created'])
+        self.assertTrue(data['message'], 'Bad Request')
+        
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()

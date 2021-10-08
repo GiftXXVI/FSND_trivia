@@ -143,6 +143,8 @@ def create_app(test_config=None):
                     'success': True
                 })
             except:
+                question.rollback()
+                question.dispose()
                 abort(422)
     '''
   @TODO:
@@ -170,9 +172,12 @@ def create_app(test_config=None):
                 question.insert()
                 question.dispose()
                 return jsonify({
-                    'success': True
+                    'success': True,
+                    'created': question.id
                 })
             except:
+                question.rollback()
+                question.dispose()
                 abort(422)
     '''
   @TODO:
