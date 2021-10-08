@@ -31,16 +31,21 @@ def prepare_questions(request, questions, lcategory):
     page = request.args.get('page', 1, type=int)
     paginated_questions, length_questions, page_size, num_pages = paginate_questions(
         page, questions)
-    ccategory = paginated_questions[len(paginated_questions) - 1]['category']
-    
+
+    if page_size == 0:
+        curr_cat = ''
+    else:
+        ccategory = paginated_questions[len(
+            paginated_questions) - 1]['category']
+        curr_cat = lcategory[ccategory]
     return jsonify({
         'success': True,
         'page_num': page,
         'curr_page_size': page_size,
         'num_pages': num_pages,
-        'total_questions': length_questions,
+        'totalQuestions': length_questions,
         'questions': paginated_questions,
-        'current_category': lcategory[ccategory],
+        'currentCategory': curr_cat,
         'categories': lcategory
     })
 
@@ -191,13 +196,15 @@ def create_app(test_config=None):
                 #    fsearch)).join(Category).order_by(Category.id, Question.id).all()
                 categories = Question.query.filter(Question.question.ilike(fsearch)).order_by(
                     Question.category, Question.id).with_entities(Question.category).distinct().all()
-                lcategory = list(set([item.category for item in categories]))
+                lcategory = list(set([Category.query.filter_by(
+                    id=item.category).one_or_none() for item in categories]))
+                fcats = {cat.id: cat.type for cat in lcategory}
                 #lcategory = list(set([item.cat.type for item in questions]))
                 if len(questions) == 0:
                     return abort(404)
                 else:
                     prepared_questions = prepare_questions(
-                        request, questions, lcategory)
+                        request, questions, fcats)
                     return prepared_questions
             except:
                 abort(422)
@@ -215,15 +222,18 @@ def create_app(test_config=None):
             Question.category, Question.id).all()
         # questions = Question.query.filter(Question.category == category_id).order_by(
         #    Question.category, Question.id).all()
-        categories = Question.query.filter(Question.category == category_id).order_by(
-            Question.category, Question.id).with_entities(Question.category).distinct().all()
-        lcategory = list(set([item.category for item in categories]))
+        categories = Question.query.order_by(
+            Question.category, Question.id).with_entities(Question.category).all()
+
+        lcategory = list(set([Category.query.filter_by(
+            id=item.category).one_or_none() for item in categories]))
+        fcats = {cat.id: cat.type for cat in lcategory}
         #lcategory = list(set([item.cat.type for item in questions]))
         if len(questions) == 0:
             return abort(404)
         else:
             prepared_questions = prepare_questions(
-                request, questions, lcategory)
+                request, questions, fcats)
             return prepared_questions
     '''
   @TODO:
@@ -270,7 +280,7 @@ def create_app(test_config=None):
             'success': False,
             'error': 404,
             'message': 'Not Found'
-        })
+        }),404
 
     @ app.errorhandler(422)
     def error_422(error):
@@ -278,7 +288,7 @@ def create_app(test_config=None):
             'success': False,
             'error': 404,
             'message': 'Unprocessable Entity'
-        })
+        }),422
 
     @ app.errorhandler(400)
     def error_400(error):
@@ -286,5 +296,5 @@ def create_app(test_config=None):
             'success': False,
             'error': 400,
             'message': 'Bad Request'
-        })
+        }),400
     return app
