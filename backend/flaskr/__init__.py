@@ -281,7 +281,7 @@ def create_app(test_config=None):
     def error_422(error):
         return jsonify({
             'success': False,
-            'error': 404,
+            'error': 422,
             'message': 'Unprocessable Entity'
         }), 422
 

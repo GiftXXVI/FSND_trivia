@@ -40,12 +40,22 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().get('/categories')
         data = json.loads(response.data)
 
-        # test response code
-        self.assertEqual(response.status_code, 200)
+        cats = Categories.query.count()
 
-        # test response body
-        self.assertEqual(data['success'], True)
-        self.assertTrue(data['categories'])
+        if cats > 0:
+            # test response code
+            self.assertEqual(response.status_code, 200)
+
+            # test response body
+            self.assertEqual(data['success'], True)
+            self.assertTrue(data['categories'])
+        else:
+            # test response code
+            self.assertEqual(response.status_code, 404)
+            # test response body
+            self.assertEqual(data['success'], False)
+            self.assertFalse(data['categories'])
+            self.assertEqual(data['message'],'Not Found')
 
     def test_get_paginated_questions(self):
         response = self.client().get('/questions')
