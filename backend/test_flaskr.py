@@ -116,10 +116,15 @@ class TriviaTestCase(unittest.TestCase):
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
+            self.assertEqual(data['curr_page_size'], 0)
             self.assertIn('num_pages', data.keys())
+            self.assertGreater(data['num_pages'], 0)
             self.assertIn('totalQuestions', data.keys())
+            self.assertGreater(data['totalQuestions'], 0)
             self.assertIn('questions', data.keys())
+            self.assertEqual(len(data['questions']), 0)
             self.assertIn('currentCategory', data.keys())
+            self.assertFalse(data['currentCategory'])
             self.assertIn('categories', data.keys())
         else:
             # test response code
@@ -136,7 +141,7 @@ class TriviaTestCase(unittest.TestCase):
             self.assertNotIn('categories', data.keys())
 
     def test_get_paginated_questions_low_page_num(self):
-        response = self.client().get('/questions?page=0')
+        response = self.client().get('/questions?page=-20')
         data = json.loads(response.data)
 
         qns = Question.query.count()
@@ -151,10 +156,15 @@ class TriviaTestCase(unittest.TestCase):
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
+            self.assertEqual(data['curr_page_size'], 0)
             self.assertIn('num_pages', data.keys())
+            self.assertGreater(data['num_pages'], 0)
             self.assertIn('totalQuestions', data.keys())
+            self.assertGreater(data['totalQuestions'], 0)
             self.assertIn('questions', data.keys())
+            self.assertEqual(len(data['questions']), 0)
             self.assertIn('currentCategory', data.keys())
+            self.assertFalse(data['currentCategory'])
             self.assertIn('categories', data.keys())
         else:
             # test response code
@@ -187,9 +197,13 @@ class TriviaTestCase(unittest.TestCase):
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
+            self.assertGreaterEqual(data['curr_page_size'], 0)
             self.assertIn('num_pages', data.keys())
+            self.assertGreater(data['num_pages'], 0)
             self.assertIn('totalQuestions', data.keys())
+            self.assertGreaterEqual(data['totalQuestions'], 0)
             self.assertIn('questions', data.keys())
+            self.assertGreaterEqual(len(data['questions']), 0)
             self.assertIn('currentCategory', data.keys())
             self.assertIn('categories', data.keys())
         else:
@@ -253,7 +267,40 @@ class TriviaTestCase(unittest.TestCase):
         self.assertNotIn('created', data.keys())
         self.assertEqual(data['message'], 'Bad Request')
 
+    def test_delete_question(self):
+        latest = Question.query.order_by(self.db.desc(Question.id)).first()
+        response = self.client().delete(f'/questions/{latest.id}')
+        data = json.loads(response.data)
 
+        #test response code
+        self.assertEqual(response.status_code, 200)
+
+        #test response body
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['deleted'], latest.id)
+
+    def test_delete_question_no_id(self):
+        response = self.client().delete('/questions')
+        data = json.loads(response.data)
+
+        #test reponse code
+        self.assertEqual(response.status_code, 405)
+        
+        #test response body
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Method Not Allowed')
+    
+    def test_delete_question_invalid_id(self):
+        response = self.client().delete('/questions/-2')
+        data = json.loads(response.data)
+
+        #test reponse code
+        self.assertEqual(response.status_code, 404)
+        
+        #test response body
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Not Found')
+        
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
