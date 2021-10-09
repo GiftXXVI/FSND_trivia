@@ -26,10 +26,13 @@ class TriviaTestCase(unittest.TestCase):
             self.db.init_app(self.app)
             # create all tables
             self.db.create_all()
-        
-        self.new_question = {'question':'In what state of matter are atoms most tightly packed?', 'answer':'Solid', 'category': '1','difficulty':'2'}
-        self.bad_cat_question = {'question':'What is the nearest planet to the sun?', 'answer':'Mercury', 'category': '100','difficulty':'2'}
-        self.bad_question = {'question':'Which of Newton\'s laws states that for every action, there\'s and equal and opposite reaction?', 'answer':'The third law of motion'}
+
+        self.new_question = {'question': 'In what state of matter are atoms most tightly packed?',
+                             'answer': 'Solid', 'category': '1', 'difficulty': '2'}
+        self.bad_cat_question = {'question': 'What is the nearest planet to the sun?',
+                                 'answer': 'Mercury', 'category': '100', 'difficulty': '2'}
+        self.bad_question = {
+            'question': 'Which of Newton\'s laws states that for every action, there\'s and equal and opposite reaction?', 'answer': 'The third law of motion'}
 
     def tearDown(self):
         """Executed after reach test"""
@@ -52,15 +55,15 @@ class TriviaTestCase(unittest.TestCase):
 
             # test response body
             self.assertEqual(data['success'], True)
-            self.assertTrue(data['categories'])
+            self.assertIn('categories', data.keys())
         else:
             # test response code
             self.assertEqual(response.status_code, 404)
 
             # test response body
             self.assertEqual(data['success'], False)
-            self.assertFalse(data['categories'])
-            self.assertEqual(data['message'],'Not Found')
+            self.assertNotIn('categories', data.keys())
+            self.assertEqual(data['message'], 'Not Found')
 
     def test_get_paginated_questions(self):
         response = self.client().get('/questions')
@@ -76,26 +79,26 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data['success'], True)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertTrue(data['page_num'])
-            self.assertTrue(data['curr_page_size'])
-            self.assertTrue(data['num_pages'])
-            self.assertTrue(data['totalQuestions'])
-            self.assertTrue(data['questions'])
-            self.assertTrue(data['currentCategory'])
-            self.assertTrue(data['categories'])
+            self.assertIn('page_num', data.keys())
+            self.assertIn('curr_page_size', data.keys())
+            self.assertIn('num_pages', data.keys())
+            self.assertIn('totalQuestions', data.keys())
+            self.assertIn('questions', data.keys())
+            self.assertIn('currentCategory', data.keys())
+            self.assertIn('categories', data.keys())
         else:
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertFalse(data['page_num'])
-            self.assertFalse(data['curr_page_size'])
-            self.assertFalse(data['num_pages'])
-            self.assertFalse(data['totalQuestions'])
-            self.assertFalse(data['questions'])
-            self.assertFalse(data['currentCategory'])
-            self.assertFalse(data['categories'])
+            self.assertNotIn('page_num', data.keys())
+            self.assertNotIn('curr_page_size', data.keys())
+            self.assertNotIn('num_pages', data.keys())
+            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('questions', data.keys())
+            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('categories', data.keys())
 
     def test_get_paginated_questions_high_page_num(self):
         response = self.client().get('/questions?page=2000000000000000')
@@ -111,26 +114,26 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data['success'], True)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertTrue(data['page_num'])
-            self.assertFalse(data['curr_page_size'])
-            self.assertTrue(data['num_pages'])
-            self.assertTrue(data['totalQuestions'])
-            self.assertFalse(data['questions'])
-            self.assertFalse(data['currentCategory'])
-            self.assertTrue(data['categories'])
+            self.assertIn('page_num', data.keys())
+            self.assertIn('curr_page_size', data.keys())
+            self.assertIn('num_pages', data.keys())
+            self.assertIn('totalQuestions', data.keys())
+            self.assertIn('questions', data.keys())
+            self.assertIn('currentCategory', data.keys())
+            self.assertIn('categories', data.keys())
         else:
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertFalse(data['page_num'])
-            self.assertFalse(data['curr_page_size'])
-            self.assertFalse(data['num_pages'])
-            self.assertFalse(data['totalQuestions'])
-            self.assertFalse(data['questions'])
-            self.assertFalse(data['currentCategory'])
-            self.assertFalse(data['categories'])
+            self.assertNotIn('page_num', data.keys())
+            self.assertNotIn('curr_page_size', data.keys())
+            self.assertNotIn('num_pages', data.keys())
+            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('questions', data.keys())
+            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('categories', data.keys())
 
     def test_get_paginated_questions_low_page_num(self):
         response = self.client().get('/questions?page=0')
@@ -146,26 +149,26 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data['success'], True)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertFalse(data['page_num'])
-            self.assertFalse(data['curr_page_size'])
-            self.assertTrue(data['num_pages'])
-            self.assertTrue(data['totalQuestions'])
-            self.assertFalse(data['questions'])
-            self.assertFalse(data['currentCategory'])
-            self.assertTrue(data['categories'])
+            self.assertIn('page_num', data.keys())
+            self.assertIn('curr_page_size', data.keys())
+            self.assertIn('num_pages', data.keys())
+            self.assertIn('totalQuestions', data.keys())
+            self.assertIn('questions', data.keys())
+            self.assertIn('currentCategory', data.keys())
+            self.assertIn('categories', data.keys())
         else:
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertFalse(data['page_num'])
-            self.assertFalse(data['curr_page_size'])
-            self.assertFalse(data['num_pages'])
-            self.assertFalse(data['totalQuestions'])
-            self.assertFalse(data['questions'])
-            self.assertFalse(data['currentCategory'])
-            self.assertFalse(data['categories'])
+            self.assertNotIn('page_num', data.keys())
+            self.assertNotIn('curr_page_size', data.keys())
+            self.assertNotIn('num_pages', data.keys())
+            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('questions', data.keys())
+            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('categories', data.keys())
 
     def test_get_paginated_questions_decimal_page_num(self):
         response = self.client().get('/questions?page=1.53')
@@ -182,74 +185,75 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data['success'], True)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertTrue(data['page_num'])
-            self.assertTrue(data['curr_page_size'])
-            self.assertTrue(data['num_pages'])
-            self.assertTrue(data['totalQuestions'])
-            self.assertTrue(data['questions'])
-            self.assertTrue(data['currentCategory'])
-            self.assertTrue(data['categories'])
+            self.assertIn('page_num', data.keys())
+            self.assertIn('curr_page_size', data.keys())
+            self.assertIn('num_pages', data.keys())
+            self.assertIn('totalQuestions', data.keys())
+            self.assertIn('questions', data.keys())
+            self.assertIn('currentCategory', data.keys())
+            self.assertIn('categories', data.keys())
         else:
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
             self.assertEqual(
                 len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
-            self.assertFalse(data['page_num'])
-            self.assertFalse(data['curr_page_size'])
-            self.assertFalse(data['num_pages'])
-            self.assertFalse(data['totalQuestions'])
-            self.assertFalse(data['questions'])
-            self.assertFalse(data['currentCategory'])
-            self.assertFalse(data['categories'])
+            self.assertNotIn('page_num', data.keys())
+            self.assertNotIn('curr_page_size', data.keys())
+            self.assertNotIn('num_pages', data.keys())
+            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('questions', data.keys())
+            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('categories', data.keys())
 
-    def test_create_question():
-        response = self.client().post('/questions', json=new_question)
+    def test_create_question(self):
+        response = self.client().post('/questions', json=self.new_question)
         data = json.loads(response.data)
 
-        #test response code
+        # test response code
         self.assertEqual(response.status_code, 200)
 
-        #test response body
+        # test response body
         self.assertEqual(data['success'], True)
-        self.assertTrue(data['created'])
-    
-    def test_create_question_empty_body():
+        self.assertIn('created', data.keys())
+
+    def test_create_question_empty_body(self):
         response = self.client().post('/questions')
         data = json.loads(response.data)
 
-        #test response code
+        # test response code
         self.assertEqual(response.status_code, 400)
 
-        #test response body
+        # test response body
         self.assertEqual(data['success'], False)
-        self.assertFalse(data['created'])
-        self.assertTrue(data['message'],'Bad Request')
+        self.assertNotIn('created', data.keys())
+        self.assertEqual(data['message'], 'Bad Request')
 
-    def test_create_question_invalid_category():
-        response = self.client().post('/questions', json=bad_cat_question)
+    def test_create_question_invalid_category(self):
+        response = self.client().post('/questions', json=self.bad_cat_question)
         data = json.loads(response.data)
 
-        #test response code
+        # test response code
         self.assertEqual(response.status_code, 422)
 
-        #test response body
+        # test response body
         self.assertEqual(data['success'], False)
-        self.assertFalse(data['created'])
-        self.assertTrue(data['message'],'Bad Request')
+        self.assertNotIn('created', data.keys())
+        self.assertEqual(data['message'], 'Unprocessable Entity')
 
-    def test_create_question_missing_fields():
-        response = self.client().post('/questions', json=bad_question)
+    def test_create_question_missing_fields(self):
+        response = self.client().post('/questions', json=self.bad_question)
         data = json.loads(response.data)
 
-        #test response code
+        # test response code
         self.assertEqual(response.status_code, 400)
 
-        #test response body
+        # test response body
         self.assertEqual(data['success'], False)
-        self.assertFalse(data['created'])
-        self.assertTrue(data['message'], 'Bad Request')
-        
+        self.assertNotIn('created', data.keys())
+        self.assertEqual(data['message'], 'Bad Request')
+
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()

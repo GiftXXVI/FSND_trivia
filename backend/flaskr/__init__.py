@@ -163,20 +163,23 @@ def create_app(test_config=None):
             answer = body.get('answer', None)
             difficulty = body.get('difficulty', None)
             category = body.get('category', None)
-            try:
-                question = Question(question=question, answer=answer,
-                                    difficulty=difficulty, category=category)
-                question.insert()
-                question.refresh()
-                question.dispose()
-                return jsonify({
-                    'success': True,
-                    'created': question.id
-                })
-            except:
-                question.rollback()
-                question.dispose()
-                abort(422)
+            if question is None or answer is None or difficulty is None or category is None:
+                abort(400)
+            else:
+                try:
+                    question = Question(question=question, answer=answer,
+                                        difficulty=difficulty, category=category)
+                    question.insert()
+                    question.refresh()
+                    question.dispose()
+                    return jsonify({
+                        'success': True,
+                        'created': question.id
+                    })
+                except:
+                    question.rollback()
+                    question.dispose()
+                    abort(422)
     '''
   @TODO:
   Create a POST endpoint to get questions based on a search term.
@@ -242,7 +245,7 @@ def create_app(test_config=None):
             previous_questions = body.get('previous_questions', [])
             quiz_category = body.get('quiz_category', None)
             questions = Question.query.filter(
-                not_(Question.id.in_(previous_questions))).filter(Question.category==quiz_category).all()
+                not_(Question.id.in_(previous_questions))).filter(Question.category == quiz_category).all()
             if len(questions) == 0:
                 abort(404)
             else:
