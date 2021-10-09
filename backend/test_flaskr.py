@@ -33,6 +33,8 @@ class TriviaTestCase(unittest.TestCase):
                                  'answer': 'Mercury', 'category': '100', 'difficulty': '2'}
         self.bad_question = {
             'question': 'Which of Newton\'s laws states that for every action, there\'s and equal and opposite reaction?', 'answer': 'The third law of motion'}
+        self.valid_search = {'searchTerm': 'India'}
+        self.invalid_search = {'searchTerm': '###'}
 
     def tearDown(self):
         """Executed after reach test"""
@@ -77,8 +79,6 @@ class TriviaTestCase(unittest.TestCase):
 
             # test response body
             self.assertEqual(data['success'], True)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
             self.assertIn('num_pages', data.keys())
@@ -90,8 +90,6 @@ class TriviaTestCase(unittest.TestCase):
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
@@ -112,8 +110,6 @@ class TriviaTestCase(unittest.TestCase):
 
             # test response body
             self.assertEqual(data['success'], True)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
             self.assertEqual(data['curr_page_size'], 0)
@@ -130,8 +126,6 @@ class TriviaTestCase(unittest.TestCase):
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
@@ -152,8 +146,6 @@ class TriviaTestCase(unittest.TestCase):
 
             # test response body
             self.assertEqual(data['success'], True)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
             self.assertEqual(data['curr_page_size'], 0)
@@ -170,8 +162,6 @@ class TriviaTestCase(unittest.TestCase):
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
@@ -193,8 +183,6 @@ class TriviaTestCase(unittest.TestCase):
 
             # test response body
             self.assertEqual(data['success'], True)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
             self.assertGreaterEqual(data['curr_page_size'], 0)
@@ -210,8 +198,6 @@ class TriviaTestCase(unittest.TestCase):
             # test response code
             self.assertEqual(response.status_code, 404)
             self.assertEqual(data['success'], False)
-            self.assertEqual(
-                len([e for e in data['categories'] if list(data['categories']).count(e) > 1]), 0)
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
@@ -272,10 +258,10 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().delete(f'/questions/{latest.id}')
         data = json.loads(response.data)
 
-        #test response code
+        # test response code
         self.assertEqual(response.status_code, 200)
 
-        #test response body
+        # test response body
         self.assertEqual(data['success'], True)
         self.assertEqual(data['deleted'], latest.id)
 
@@ -283,24 +269,77 @@ class TriviaTestCase(unittest.TestCase):
         response = self.client().delete('/questions')
         data = json.loads(response.data)
 
-        #test reponse code
+        # test reponse code
         self.assertEqual(response.status_code, 405)
-        
-        #test response body
+
+        # test response body
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Method Not Allowed')
-    
+
     def test_delete_question_invalid_id(self):
         response = self.client().delete('/questions/-2')
         data = json.loads(response.data)
 
-        #test reponse code
+        # test reponse code
         self.assertEqual(response.status_code, 404)
-        
-        #test response body
+
+        # test response body
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Not Found')
-        
+
+    def test_search_questions(self):
+        response = self.client().post('/questions/search', json=self.valid_search)
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 200)
+
+        # test response body
+        self.assertEqual(data['success'], True)
+        self.assertIn('page_num', data.keys())
+        self.assertIn('curr_page_size', data.keys())
+        self.assertIn('num_pages', data.keys())
+        self.assertIn('totalQuestions', data.keys())
+        self.assertIn('questions', data.keys())
+        self.assertIn('currentCategory', data.keys())
+        self.assertIn('categories', data.keys())
+
+    def test_search_questions_invalid(self):
+        response = self.client().post('/questions/search', json=self.invalid_search)
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 200)
+
+        # test response body
+        self.assertEqual(data['success'], True)
+        self.assertIn('page_num', data.keys())
+        self.assertIn('curr_page_size', data.keys())
+        self.assertIn('num_pages', data.keys())
+        self.assertIn('totalQuestions', data.keys())
+        self.assertIn('questions', data.keys())
+        self.assertIn('currentCategory', data.keys())
+        self.assertIn('categories', data.keys())
+
+    def test_search_questions_empty(self):
+        response = self.client().post('/questions/search')
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 400)
+
+        # test response body
+        self.assertEqual(data['success'], False)
+        self.assertNotIn('page_num', data.keys())
+        self.assertNotIn('curr_page_size', data.keys())
+        self.assertNotIn('num_pages', data.keys())
+        self.assertNotIn('totalQuestions', data.keys())
+        self.assertNotIn('questions', data.keys())
+        self.assertNotIn('currentCategory', data.keys())
+        self.assertNotIn('categories', data.keys())
+
+    
+
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
