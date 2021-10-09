@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flaskr import create_app
 from models import setup_db, Question, Category
+from random import choice
 
 
 class TriviaTestCase(unittest.TestCase):
@@ -338,7 +339,83 @@ class TriviaTestCase(unittest.TestCase):
         self.assertNotIn('currentCategory', data.keys())
         self.assertNotIn('categories', data.keys())
 
-    
+    def test_get_category_questions(self):
+        categories = Category.query.order_by(Category.id).all()
+        rand = choice([cat.id for cat in categories])
+        response = self.client().get(f'/categories/{rand}/questions')
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 200)
+
+        # test response body
+        self.assertEqual(data['success'], True)
+        self.assertIn('page_num', data.keys())
+        self.assertIn('curr_page_size', data.keys())
+        self.assertIn('num_pages', data.keys())
+        self.assertIn('totalQuestions', data.keys())
+        self.assertIn('questions', data.keys())
+        self.assertIn('currentCategory', data.keys())
+        self.assertIn('categories', data.keys())
+
+    def test_get_category_questions_invalid_category(self):
+        response = self.client().get('/categories/-2/questions')
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 404)
+
+        # test response body
+        self.assertEqual(data['success'], False)
+        self.assertNotIn('page_num', data.keys())
+        self.assertNotIn('curr_page_size', data.keys())
+        self.assertNotIn('num_pages', data.keys())
+        self.assertNotIn('totalQuestions', data.keys())
+        self.assertNotIn('questions', data.keys())
+        self.assertNotIn('currentCategory', data.keys())
+        self.assertNotIn('categories', data.keys())
+
+    def test_get_quizzes(self):
+        categories = Category.query.order_by(Category.id).all()
+        rand_cat = choice([cat.id for cat in categories])
+
+        questions = Question.query.filter(
+            Question.category == rand_cat).order_by(Question.id).all()
+        rand_question = choice([question.id for question in questions])
+
+        request_data = {'previous_questions': [
+            rand_question], 'quiz_category': rand_cat}
+
+        response = self.client().post('/quizzes', json=request_data)
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 200)
+
+        # test response body
+        self.assertIn('question', data.keys())
+
+    def test_get_quizzes_empty(self):
+        response = self.client().post('/quizzes')
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 400)
+
+        # test response body
+        self.assertNotIn('question', data.keys())
+
+    def test_get_quizzes_no_category(self):
+        req_data = {}
+        response = self.client().post('/quizzes', json=req_data)
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 404)
+
+        # test response body
+        self.assertNotIn('question', data.keys())
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
