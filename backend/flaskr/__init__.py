@@ -108,12 +108,8 @@ def create_app(test_config=None):
             questions = Question.query.order_by(
                 Question.category, Question.id).all()
 
-            categories = Question.query.order_by(
-                Question.category, Question.id).with_entities(Question.category).all()
-
-            lcategory = list(set([Category.query.filter_by(
-                id=item.category).one_or_none() for item in categories]))
-            fcats = {cat.id: cat.type for cat in lcategory}
+            categories = Category.query.order_by(Category.id).all()
+            fcats = {cat.id: cat.type for cat in categories}
             if len(questions) == 0:
                 return abort(404)
             else:
@@ -199,22 +195,13 @@ def create_app(test_config=None):
         else:
             search_term = body.get('searchTerm', None)
             fsearch = f'%{search_term}%'
-            try:
-                questions = Question.query.filter(Question.question.ilike(
-                    fsearch)).order_by(Question.category, Question.id).all()
-                categories = Question.query.filter(Question.question.ilike(fsearch)).order_by(
-                    Question.category, Question.id).with_entities(Question.category).distinct().all()
-                lcategory = list(set([Category.query.filter_by(
-                    id=item.category).one_or_none() for item in categories]))
-                fcats = {cat.id: cat.type for cat in lcategory}
-                if len(questions) == 0:
-                    return abort(404)
-                else:
-                    prepared_questions = prepare_questions(
-                        request, questions, fcats)
-                    return prepared_questions
-            except:
-                abort(422)
+            questions = Question.query.filter(Question.question.ilike(
+                fsearch)).order_by(Question.category, Question.id).all()
+            categories = Category.query.order_by(Category.id).all()
+            fcats = {cat.id: cat.type for cat in categories}
+            prepared_questions = prepare_questions(
+                request, questions, fcats)
+            return prepared_questions
     '''
   @TODO:
   Create a GET endpoint to get questions based on category.
@@ -227,12 +214,8 @@ def create_app(test_config=None):
     def get_cat_questions(category_id):
         questions = Question.query.filter(Question.category == category_id).order_by(
             Question.category, Question.id).all()
-        categories = Question.query.order_by(
-            Question.category, Question.id).with_entities(Question.category).all()
-
-        lcategory = list(set([Category.query.filter_by(
-            id=item.category).one_or_none() for item in categories]))
-        fcats = {cat.id: cat.type for cat in lcategory}
+        categories = Category.query.order_by(Category.id).all()
+        fcats = {cat.id: cat.type for cat in categories}
         if len(questions) == 0:
             return abort(404)
         else:
