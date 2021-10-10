@@ -83,9 +83,9 @@ class TriviaTestCase(unittest.TestCase):
             self.assertIn('page_num', data.keys())
             self.assertIn('curr_page_size', data.keys())
             self.assertIn('num_pages', data.keys())
-            self.assertIn('totalQuestions', data.keys())
+            self.assertIn('total_questions', data.keys())
             self.assertIn('questions', data.keys())
-            self.assertIn('currentCategory', data.keys())
+            self.assertIn('current_category', data.keys())
             self.assertIn('categories', data.keys())
         else:
             # test response code
@@ -94,9 +94,9 @@ class TriviaTestCase(unittest.TestCase):
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
-            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('total_questions', data.keys())
             self.assertNotIn('questions', data.keys())
-            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('current_category', data.keys())
             self.assertNotIn('categories', data.keys())
 
     def test_get_paginated_questions_high_page_num(self):
@@ -116,12 +116,12 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data['curr_page_size'], 0)
             self.assertIn('num_pages', data.keys())
             self.assertGreater(data['num_pages'], 0)
-            self.assertIn('totalQuestions', data.keys())
-            self.assertGreater(data['totalQuestions'], 0)
+            self.assertIn('total_questions', data.keys())
+            self.assertGreater(data['total_questions'], 0)
             self.assertIn('questions', data.keys())
             self.assertEqual(len(data['questions']), 0)
-            self.assertIn('currentCategory', data.keys())
-            self.assertFalse(data['currentCategory'])
+            self.assertIn('current_category', data.keys())
+            self.assertFalse(data['current_category'])
             self.assertIn('categories', data.keys())
         else:
             # test response code
@@ -130,9 +130,9 @@ class TriviaTestCase(unittest.TestCase):
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
-            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('total_questions', data.keys())
             self.assertNotIn('questions', data.keys())
-            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('current_category', data.keys())
             self.assertNotIn('categories', data.keys())
 
     def test_get_paginated_questions_low_page_num(self):
@@ -152,12 +152,12 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data['curr_page_size'], 0)
             self.assertIn('num_pages', data.keys())
             self.assertGreater(data['num_pages'], 0)
-            self.assertIn('totalQuestions', data.keys())
-            self.assertGreater(data['totalQuestions'], 0)
+            self.assertIn('total_questions', data.keys())
+            self.assertGreater(data['total_questions'], 0)
             self.assertIn('questions', data.keys())
             self.assertEqual(len(data['questions']), 0)
-            self.assertIn('currentCategory', data.keys())
-            self.assertFalse(data['currentCategory'])
+            self.assertIn('current_category', data.keys())
+            self.assertFalse(data['current_category'])
             self.assertIn('categories', data.keys())
         else:
             # test response code
@@ -166,9 +166,9 @@ class TriviaTestCase(unittest.TestCase):
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
-            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('total_questions', data.keys())
             self.assertNotIn('questions', data.keys())
-            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('current_category', data.keys())
             self.assertNotIn('categories', data.keys())
 
     def test_get_paginated_questions_decimal_page_num(self):
@@ -189,11 +189,11 @@ class TriviaTestCase(unittest.TestCase):
             self.assertGreaterEqual(data['curr_page_size'], 0)
             self.assertIn('num_pages', data.keys())
             self.assertGreater(data['num_pages'], 0)
-            self.assertIn('totalQuestions', data.keys())
-            self.assertGreaterEqual(data['totalQuestions'], 0)
+            self.assertIn('total_questions', data.keys())
+            self.assertGreaterEqual(data['total_questions'], 0)
             self.assertIn('questions', data.keys())
             self.assertGreaterEqual(len(data['questions']), 0)
-            self.assertIn('currentCategory', data.keys())
+            self.assertIn('current_category', data.keys())
             self.assertIn('categories', data.keys())
         else:
             # test response code
@@ -202,9 +202,9 @@ class TriviaTestCase(unittest.TestCase):
             self.assertNotIn('page_num', data.keys())
             self.assertNotIn('curr_page_size', data.keys())
             self.assertNotIn('num_pages', data.keys())
-            self.assertNotIn('totalQuestions', data.keys())
+            self.assertNotIn('total_questions', data.keys())
             self.assertNotIn('questions', data.keys())
-            self.assertNotIn('currentCategory', data.keys())
+            self.assertNotIn('current_category', data.keys())
             self.assertNotIn('categories', data.keys())
 
     def test_create_question(self):
@@ -300,9 +300,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIn('page_num', data.keys())
         self.assertIn('curr_page_size', data.keys())
         self.assertIn('num_pages', data.keys())
-        self.assertIn('totalQuestions', data.keys())
+        self.assertIn('total_questions', data.keys())
         self.assertIn('questions', data.keys())
-        self.assertIn('currentCategory', data.keys())
+        self.assertIn('current_category', data.keys())
         self.assertIn('categories', data.keys())
 
     def test_search_questions_invalid(self):
@@ -317,9 +317,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIn('page_num', data.keys())
         self.assertIn('curr_page_size', data.keys())
         self.assertIn('num_pages', data.keys())
-        self.assertIn('totalQuestions', data.keys())
+        self.assertIn('total_questions', data.keys())
         self.assertIn('questions', data.keys())
-        self.assertIn('currentCategory', data.keys())
+        self.assertIn('current_category', data.keys())
         self.assertIn('categories', data.keys())
 
     def test_search_questions_empty(self):
@@ -334,9 +334,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertNotIn('page_num', data.keys())
         self.assertNotIn('curr_page_size', data.keys())
         self.assertNotIn('num_pages', data.keys())
-        self.assertNotIn('totalQuestions', data.keys())
+        self.assertNotIn('total_questions', data.keys())
         self.assertNotIn('questions', data.keys())
-        self.assertNotIn('currentCategory', data.keys())
+        self.assertNotIn('current_category', data.keys())
         self.assertNotIn('categories', data.keys())
 
     def test_get_category_questions(self):
@@ -353,9 +353,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertIn('page_num', data.keys())
         self.assertIn('curr_page_size', data.keys())
         self.assertIn('num_pages', data.keys())
-        self.assertIn('totalQuestions', data.keys())
+        self.assertIn('total_questions', data.keys())
         self.assertIn('questions', data.keys())
-        self.assertIn('currentCategory', data.keys())
+        self.assertIn('current_category', data.keys())
         self.assertIn('categories', data.keys())
 
     def test_get_category_questions_invalid_category(self):
@@ -370,9 +370,9 @@ class TriviaTestCase(unittest.TestCase):
         self.assertNotIn('page_num', data.keys())
         self.assertNotIn('curr_page_size', data.keys())
         self.assertNotIn('num_pages', data.keys())
-        self.assertNotIn('totalQuestions', data.keys())
+        self.assertNotIn('total_questions', data.keys())
         self.assertNotIn('questions', data.keys())
-        self.assertNotIn('currentCategory', data.keys())
+        self.assertNotIn('current_category', data.keys())
         self.assertNotIn('categories', data.keys())
 
     def test_get_quizzes(self):
@@ -384,7 +384,7 @@ class TriviaTestCase(unittest.TestCase):
         rand_question = choice([question.id for question in questions])
 
         request_data = {'previous_questions': [
-            rand_question], 'quiz_category': rand_cat}
+            rand_question], 'quiz_category': {'id': rand_cat}}
 
         response = self.client().post('/quizzes', json=request_data)
         data = json.loads(response.data)
@@ -411,7 +411,7 @@ class TriviaTestCase(unittest.TestCase):
         data = json.loads(response.data)
 
         # test response code
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 422)
 
         # test response body
         self.assertNotIn('question', data.keys())

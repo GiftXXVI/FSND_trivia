@@ -43,9 +43,9 @@ def prepare_questions(request, questions, lcategory):
         'page_num': page,
         'curr_page_size': page_size,
         'num_pages': num_pages,
-        'totalQuestions': length_questions,
+        'total_questions': length_questions,
         'questions': paginated_questions,
-        'currentCategory': curr_cat,
+        'current_category': curr_cat,
         'categories': lcategory
     })
 
@@ -244,18 +244,25 @@ def create_app(test_config=None):
         else:
             previous_questions = body.get('previous_questions', [])
             quiz_category = body.get('quiz_category', None)
-            questions = Question.query.filter(
-                not_(Question.id.in_(previous_questions))).filter(Question.category == quiz_category).all()
-            if len(questions) == 0:
-                abort(404)
+            if quiz_category is None:
+                abort(422)
             else:
-                available_questions = [question.format()
-                                       for question in questions]
-                next_question = random.choice(available_questions)
-                return jsonify({
-                    'success': True,
-                    'question': next_question
-                })
+                if quiz_category['id'] == 0:
+                    questions = Question.query.filter(
+                        not_(Question.id.in_(previous_questions))).all()
+                else:
+                    questions = Question.query.filter(
+                        not_(Question.id.in_(previous_questions))).filter(Question.category == quiz_category['id']).all()
+                if len(questions) == 0:
+                    abort(404)
+                else:
+                    available_questions = [question.format()
+                                        for question in questions]
+                    next_question = random.choice(available_questions)
+                    return jsonify({
+                        'success': True,
+                        'question': next_question
+                    })
 
     '''
   @TODO:
