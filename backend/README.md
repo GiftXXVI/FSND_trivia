@@ -1,111 +1,290 @@
-# Backend - Full Stack Trivia API 
+# Trivia API Documentation
+## Introduction
 
-### Installing Dependencies for the Backend
+## Getting Started
 
-1. **Python 3.7** - Follow instructions to install the latest version of python for your platform in the [python docs](https://docs.python.org/3/using/unix.html#getting-and-installing-the-latest-version-of-python)
+## Errors
 
+Errors are returned in the following format:
+```javascript
+{
+  "error": 405,
+  "message": "Method Not Allowed",
+  "success": false
+}
+```
+## Resource Endpoint Library
 
-2. **Virtual Enviornment** - We recommend working within a virtual environment whenever using Python for projects. This keeps your dependencies for each project separate and organaized. Instructions for setting up a virual enviornment for your platform can be found in the [python docs](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
+### GET `/categories`
 
+* General
 
-3. **PIP Dependencies** - Once you have your virtual environment setup and running, install dependencies by naviging to the `/backend` directory and running:
+* Sample URL: 
 ```bash
-pip install -r requirements.txt
+curl http://127.0.0.1:5000/categories
 ```
-This will install all of the required packages we selected within the `requirements.txt` file.
 
+```javascript
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "success": true
+}
+```
 
-4. **Key Dependencies**
- - [Flask](http://flask.pocoo.org/)  is a lightweight backend microservices framework. Flask is required to handle requests and responses.
+### GET `/categories/{integer}/questions`
 
- - [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use handle the lightweight sqlite database. You'll primarily work in app.py and can reference models.py. 
+* General
 
- - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross origin requests from our frontend server. 
-
-### Database Setup
-With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
+* Sample URL
 ```bash
-psql trivia < trivia.psql
+curl http://127.0.0.1:5000/categories/4/questions
+```
+```javascript
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "curr_page_size": 4,
+  "current_category": "History",
+  "num_pages": 1,
+  "page_num": 1,
+  "questions": [
+    {
+      "answer": "Maya Angelou",
+      "category": 4,
+      "difficulty": 2,
+      "id": 5,
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+    },
+    {
+      "answer": "Muhammad Ali",
+      "category": 4,
+      "difficulty": 1,
+      "id": 9,
+      "question": "What boxer's original name is Cassius Clay?"
+    },
+    {
+      "answer": "George Washington Carver",
+      "category": 4,
+      "difficulty": 2,
+      "id": 12,
+      "question": "Who invented Peanut Butter?"
+    },
+    {
+      "answer": "Scarab",
+      "category": 4,
+      "difficulty": 4,
+      "id": 23,
+      "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+    }
+  ],
+  "success": true,
+  "total_questions": 4
+}
 ```
 
-### Running the server
+### GET `/questions?page={integer}`
 
-From within the `./src` directory first ensure you are working using your created virtual environment.
+* General
+* Sample URL
+```bash
+ curl http://127.0.0.1:5000/questions?page=1
+```
+```javascript
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "curr_page_size": 10,
+  "current_category": "Geography",
+  "num_pages": 3,
+  "page_num": 1,
+  "questions": [
+    {
+      "answer": "The Liver",
+      "category": 1,
+      "difficulty": 4,
+      "id": 20,
+      "question": "What is the heaviest organ in the human body?"
+    },
+    {
+      "answer": "Alexander Fleming",
+      "category": 1,
+      "difficulty": 3,
+      "id": 21,
+      "question": "Who discovered penicillin?"
+    },
+    {
+      "answer": "Blood",
+      "category": 1,
+      "difficulty": 4,
+      "id": 22,
+      "question": "Hematology is a branch of medicine involving the study of what?"
+    },
+    {
+      "answer": "Tendons",
+      "category": 1,
+      "difficulty": 4,
+      "id": 25,
+      "question": "What tissues connect the muscles to the bones?"
+    },
+    {
+      "answer": "Valentina Tereshkova",
+      "category": 1,
+      "difficulty": 5,
+      "id": 32,
+      "question": "What is the name of the first woman in space?"
+    },
+    {
+      "answer": "Escher",
+      "category": 2,
+      "difficulty": 1,
+      "id": 16,
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+    },
+    {
+      "answer": "Mona Lisa",
+      "category": 2,
+      "difficulty": 3,
+      "id": 17,
+      "question": "La Giaconda is better known as what?"
+    },
+    {
+      "answer": "One",
+      "category": 2,
+      "difficulty": 4,
+      "id": 18,
+      "question": "How many paintings did Van Gogh sell in his lifetime?"
+    },
+    {
+      "answer": "Jackson Pollock",
+      "category": 2,
+      "difficulty": 2,
+      "id": 19,
+      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+    },
+    {
+      "answer": "Lake Victoria",
+      "category": 3,
+      "difficulty": 2,
+      "id": 13,
+      "question": "What is the largest lake in Africa?"
+    }
+  ],
+  "success": true,
+  "total_questions": 26
+}
+```
 
-To run the server, execute:
+### DELETE `/questions/{integer}`
+
+* General
+
+* Sample URL
 
 ```bash
-flask run --reload
+curl -X DELETE http://127.0.0.1:5000/questions/33
 ```
 
-The `--reload` flag will detect file changes and restart the server automatically.
-
-## ToDo Tasks
-These are the files you'd want to edit in the backend:
-
-1. *./backend/flaskr/`__init__.py`*
-2. *./backend/test_flaskr.py*
-
-
-One note before you delve into your tasks: for each endpoint, you are expected to define the endpoint and response data. The frontend will be a plentiful resource because it is set up to expect certain endpoints and response data formats already. You should feel free to specify endpoints in your own way; if you do so, make sure to update the frontend or you will get some unexpected behavior. 
-
-1. Use Flask-CORS to enable cross-domain requests and set response headers. 
-
-
-2. Create an endpoint to handle GET requests for questions, including pagination (every 10 questions). This endpoint should return a list of questions, number of total questions, current category, categories. 
-
-
-3. Create an endpoint to handle GET requests for all available categories. 
-
-
-4. Create an endpoint to DELETE question using a question ID. 
-
-
-5. Create an endpoint to POST a new question, which will require the question and answer text, category, and difficulty score. 
-
-
-6. Create a POST endpoint to get questions based on category. 
-
-
-7. Create a POST endpoint to get questions based on a search term. It should return any questions for whom the search term is a substring of the question. 
-
-
-8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
-
-
-9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
-
-
-
-## Review Comment to the Students
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
-
-Endpoints
-GET '/api/v1.0/categories'
-GET ...
-POST ...
-DELETE ...
-
-GET '/api/v1.0/categories'
-- Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
-- Request Arguments: None
-- Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
-{'1' : "Science",
-'2' : "Art",
-'3' : "Geography",
-'4' : "History",
-'5' : "Entertainment",
-'6' : "Sports"}
-
+```javascript
+{
+  "deleted": 33,
+  "success": true
+}
 ```
 
+### POST `/questions`
 
-## Testing
-To run the tests, run
+* General
+
+* Sample URL
+
+```bash
+curl -X POST -H 'Content-Type:application/json' -d '{"question":"Which actor has been killed by an Alien, a Terminator and a Predator?", "answer":"Bill Paxton", "category":5, "difficulty":5}' http://127.0.0.1:5000/questions
 ```
-dropdb trivia_test
-createdb trivia_test
-psql trivia_test < trivia.psql
-python test_flaskr.py
+
+```javascript
+{
+  "created": 36,
+  "success": true
+}
+```
+
+### POST `/questions/search`
+
+* General
+
+* Sample URL
+
+```bash
+curl -X POST -H 'Content-Type:application/json' -d '{"searchTerm":"Terminator"}' http://127.0.0.1:5000/questions/se
+arch
+```
+
+```javascript
+{
+  "categories": {
+    "1": "Science",
+    "2": "Art",
+    "3": "Geography",
+    "4": "History",
+    "5": "Entertainment",
+    "6": "Sports"
+  },
+  "curr_page_size": 1,
+  "current_category": "Entertainment",
+  "num_pages": 1,
+  "page_num": 1,
+  "questions": [
+    {
+      "answer": "Bill Paxton",
+      "category": 5,
+      "difficulty": 5,
+      "id": 36,
+      "question": "Which actor has been killed by an Alien, a Terminator and a Predator?"
+    }
+  ],
+  "success": true,
+  "total_questions": 1
+}
+```
+### POST `/quizzes`
+
+* General
+
+* Sample URL
+
+``` bash
+ curl -X POST -H 'Content-Type:application/json' -d '{"quiz_category":{"type":"Entertainment","id":5}, "previous_questions":[4,2]}' http://127.0.0.1:5000/quizzes
+```
+
+```javascript
+{
+  "question": {
+    "answer": "Bill Paxton",
+    "category": 5,
+    "difficulty": 5,
+    "id": 36,
+    "question": "Which actor has been killed by an Alien, a Terminator and a Predator?"
+  },
+  "quiz_category_id": 5,
+  "success": true
+}
 ```

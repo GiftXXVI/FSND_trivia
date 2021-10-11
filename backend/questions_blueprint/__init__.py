@@ -6,11 +6,6 @@ from utilities import paginate_questions, prepare_questions
 
 questions_blueprint = Blueprint('questions_blueprint', __name__)
 
-
-@questions_blueprint.route('/questions/test', methods=['GET'])
-def test():
-    return "Questions: Up and Up"
-
 '''
 @TODO:
 Create an endpoint to handle GET requests for questions,
