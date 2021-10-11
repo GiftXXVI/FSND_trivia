@@ -14,6 +14,8 @@ The Trivia API forms the backend of the Trivia App. It connects client applicati
 
 Errors are returned in the following format:
 
+the returned json object has an `error` value reflecting the HTTP status code of the error, a `message` reflecting the HTTP status code message and a `success` value of `false` indicating that the operation was not successful.
+
 ```javascript
 {
   "error": 405,
@@ -36,6 +38,12 @@ In the event of an error, the API may return one of the following HTTP status co
 
 #### General
 This endpoint is used to retrieve a list of categories. 
+##### Request Body
+The endpoint responds with an empty request body.
+
+##### Response Body
+
+The endpoint responds with a `id`:`type` list called `categories` and a `success` value of `true` indicating that the operation was a success.
 
 #### Sample URL:
 
@@ -61,7 +69,14 @@ curl http://127.0.0.1:5000/categories
 
 #### General
 
-This endpoint is used to retrieve a list of questions under a specified category. It has an optional `page` parameter which can be used to specify the page number.
+This endpoint is used to retrieve a list of questions under a specified category. 
+
+It has an optional `page` URL parameter which can be used to specify the page number.
+
+##### Request Body
+The endpoint expects and empty request body.
+
+##### Response Body
 
 The endpoint responds with the complete list of available categories `categories`, the current page size `curr_page_size`, the current category `current_category`, the total number of available pages `num_pages`, the current page number `page_num`, the set of questions `questions`, whether the retrival operation was successful `success` and the total number of questions available under the category `total_questions`.
 
@@ -123,9 +138,15 @@ curl http://127.0.0.1:5000/categories/4/questions?page=1
 ### GET `/questions?page={integer}`
 
 #### General
-This endpoint is used to retrieve a list of questions of all categories. Like `/categories/{integer}/questions` above, it also has an optional `page` parameter which can be used to specify the page number.
+This endpoint is used to retrieve a list of questions of all categories. 
 
-Just like `/categories/{integer}/questions`, the endpoint responds with the complete list of available categories `categories`, the current page size `curr_page_size`, the current category `current_category`, the total number of available pages `num_pages`, the current page number `page_num`, the set of questions `questions`, whether the retrival operation was successful `success` and the total number of questions available under the category `total_questions`.
+Like `/categories/{integer}/questions` above, it also has an optional `page` URL parameter which can be used to specify the page number.
+
+##### Request Body
+The endpoint expects and empty request body.
+
+##### Response Body
+Just like `/categories/{integer}/questions`, the endpoint responds with the complete list of available categories `categories`, the current page size `curr_page_size`, the current category `current_category`, the total number of available pages `num_pages`, the current page number `page_num`, the set of questions `questions`, a `success` value of `true` indicating that the operation was a success and the total number of questions available under the category `total_questions`.
 
 #### Sample URL and Response
 
@@ -226,9 +247,15 @@ Just like `/categories/{integer}/questions`, the endpoint responds with the comp
 
 ### DELETE `/questions/{integer}`
 
-- General
+#### General
+This endpoint is used to delete a specified question. 
+##### Request Body
+The endpoint expects an empty request body.
 
-- Sample URL
+##### Response Body
+The endpoint returns the `id` of the deleted item and a `success` value of `true` indicating that the operation was a success. 
+
+#### Sample URL and Response
 
 ```bash
 curl -X DELETE http://127.0.0.1:5000/questions/33
@@ -243,9 +270,20 @@ curl -X DELETE http://127.0.0.1:5000/questions/33
 
 ### POST `/questions`
 
-- General
+#### General
+This endpoint is used to create a new question. 
 
-- Sample URL
+##### Request Body
+The request is expected to contain a json object with the following attributes:
+
+* `question`: the question statement as a string
+* `answer`: the answer statement as a string
+* `category`: the valid id of one of the categories defined in the database as an integer
+* `difficulty`: the difficulty level of the question as an integer value between 1 and 5
+
+##### Response Body
+The endpoint responds with a json object with a `success` value of `true` indicating that the operation was a success and a `created` value reflecting the id of the question that has been created.
+#### Sample URL
 
 ```bash
 curl -X POST -H 'Content-Type:application/json' -d '{"question":"Which actor has been killed by an Alien, a Terminator and a Predator?", "answer":"Bill Paxton", "category":5, "difficulty":5}' http://127.0.0.1:5000/questions
@@ -258,11 +296,18 @@ curl -X POST -H 'Content-Type:application/json' -d '{"question":"Which actor has
 }
 ```
 
-### POST `/questions/search`
+### POST `/questions/search?page={integer}`
 
-- General
+#### General
+This endpoint is used to search for a question by providing a string that matches part of the question statement. 
 
-- Sample URL
+##### Request Body
+The request is expected to contain a `searchTerm` string to compare against questions in the database and return matching results. There is also an optional `page` parameter to enable paging of the returned results just like in `/questions` and `/categories/{integer}/questions`.
+
+##### Response Body
+Just like `/questions/` and `/categories/{integer}/questions`, the endpoint responds with the complete list of available categories `categories`, the current page size `curr_page_size`, the current category `current_category`, the total number of available pages `num_pages`, the current page number `page_num`, the set of questions `questions`, a `success` value of `true` indicating that the operation was a success and the total number of questions available under the category `total_questions`.
+
+#### Sample URL
 
 ```bash
 curl -X POST -H 'Content-Type:application/json' -d '{"searchTerm":"Terminator"}' http://127.0.0.1:5000/questions/se
@@ -299,9 +344,16 @@ arch
 
 ### POST `/quizzes`
 
-- General
+#### General
+This endpoint is used to run a quiz by maintaining a state object consisting of the category and a set of previous questions. 
 
-- Sample URL
+##### Request Body
+The endpoint expects a json request body consisting of a `quiz_category` object with a string `type` and an integer `id` where `id` is a valid category id. 
+
+##### Response Body
+The endpoint responds with a question object, a `quiz_category_id` and a `success` value of `true` indicating that the operation was successful.
+
+#### Sample URL
 
 ```bash
  curl -X POST -H 'Content-Type:application/json' -d '{"quiz_category":{"type":"Entertainment","id":5}, "previous_questions":[4,2]}' http://127.0.0.1:5000/quizzes
