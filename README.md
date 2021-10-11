@@ -46,7 +46,7 @@ You should run the tests from the `./backend` directory using the following comm
 python3 test_flaskr.py
 ```
 #### API Reference
-The API Reference is defined in the [README file within ./backend](./backend/README.md).
+>View the API Reference in the [README file within ./backend](./backend/README.md).
 #### Deployment
 There are no current plans for deployment as this is an academic project.
 
