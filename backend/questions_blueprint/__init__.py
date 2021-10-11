@@ -18,6 +18,8 @@ you should see questions and categories generated,
 ten questions per page and pagination at the bottom of the screen for three pages.
 Clicking on the page numbers should update the questions.
 '''
+
+
 @questions_blueprint.route('/questions', methods=['GET'])
 def get_questions():
     try:
@@ -34,6 +36,8 @@ def get_questions():
             return prepared_questions
     except:
         abort(500)
+
+
 '''
 @TODO:
 Create an endpoint to DELETE question using a question ID.
@@ -41,6 +45,8 @@ Create an endpoint to DELETE question using a question ID.
 TEST: When you click the trash icon next to a question, the question will be removed.
 This removal will persist in the database and when you refresh the page.
 '''
+
+
 @questions_blueprint.route('/questions/<int:question_id>', methods=['DELETE'])
 def delete_question(question_id):
     question = Question.query.filter(
@@ -59,6 +65,8 @@ def delete_question(question_id):
             question.rollback()
             question.dispose()
             abort(422)
+
+
 '''
 @TODO:
 Create an endpoint to POST a new question,
@@ -69,6 +77,8 @@ TEST: When you submit a question on the "Add" tab,
 the form will clear and the question will appear at the end of the last page
 of the questions list in the "List" tab.
 '''
+
+
 @questions_blueprint.route('/questions', methods=['POST'])
 def create_question():
     body = request.get_json()
@@ -96,6 +106,8 @@ def create_question():
                 question.rollback()
                 question.dispose()
                 abort(422)
+
+
 '''
 @TODO:
 Create a POST endpoint to get questions based on a search term.
@@ -106,6 +118,8 @@ TEST: Search by any phrase. The questions list will update to include
 only question that include that string within their question.
 Try using the word "title" to start.
 '''
+
+
 @questions_blueprint.route('/questions/search', methods=['POST'])
 def search_questions():
     body = request.get_json()

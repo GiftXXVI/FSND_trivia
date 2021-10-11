@@ -27,7 +27,7 @@ def get_quiz():
         abort(400)
     else:
         previous_questions = body.get('previous_questions', [])
-        quiz_category = body.get('quiz_category', None)        
+        quiz_category = body.get('quiz_category', None)
         if quiz_category is None:
             abort(422)
         else:

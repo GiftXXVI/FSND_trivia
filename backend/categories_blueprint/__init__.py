@@ -12,6 +12,7 @@ Create an endpoint to handle GET requests
 for all available categories.
 '''
 
+
 @categories_blueprint.route('/categories', methods=['GET'])
 def get_categories():
     # try:

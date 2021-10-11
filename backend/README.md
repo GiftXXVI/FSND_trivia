@@ -1,11 +1,19 @@
 # Trivia API Documentation
+
 ## Introduction
 
+The Trivia API forms the backend of the Trivia App. It connects client applications to the database and allows the client applications to communicate with the database using a set of simple, standards compliant HTTP methods.
+
 ## Getting Started
+
+- Base URL: the API can be accessed at the following URL `http://127.0.0.1:5000/`
+
+- Authentication: the API does not yet support any authentication methods or API keys.
 
 ## Errors
 
 Errors are returned in the following format:
+
 ```javascript
 {
   "error": 405,
@@ -13,13 +21,24 @@ Errors are returned in the following format:
   "success": false
 }
 ```
+
+In the event of an error, the API may return one of the following HTTP status codes and messages:
+
+- 404: Not Found
+- 422: Unprocessable Entity
+- 400: Bad Request
+- 405: Method Not Allowed
+- 500: Internal Server Error
+
 ## Resource Endpoint Library
 
 ### GET `/categories`
 
-* General
+#### General
+This endpoint is used to retrieve a list of categories. 
 
-* Sample URL: 
+#### Sample URL:
+
 ```bash
 curl http://127.0.0.1:5000/categories
 ```
@@ -38,14 +57,20 @@ curl http://127.0.0.1:5000/categories
 }
 ```
 
-### GET `/categories/{integer}/questions`
+### GET `/categories/{integer}/questions?page={integer}`
 
-* General
+#### General
 
-* Sample URL
+This endpoint is used to retrieve a list of questions under a specified category. It has an optional `page` parameter which can be used to specify the page number.
+
+The endpoint responds with the complete list of available categories `categories`, the current page size `curr_page_size`, the current category `current_category`, the total number of available pages `num_pages`, the current page number `page_num`, the set of questions `questions`, whether the retrival operation was successful `success` and the total number of questions available under the category `total_questions`.
+
+#### Sample URL and Response
+
 ```bash
-curl http://127.0.0.1:5000/categories/4/questions
+curl http://127.0.0.1:5000/categories/4/questions?page=1
 ```
+
 ```javascript
 {
   "categories": {
@@ -97,11 +122,17 @@ curl http://127.0.0.1:5000/categories/4/questions
 
 ### GET `/questions?page={integer}`
 
-* General
-* Sample URL
+#### General
+This endpoint is used to retrieve a list of questions of all categories. Like `/categories/{integer}/questions` above, it also has an optional `page` parameter which can be used to specify the page number.
+
+Just like `/categories/{integer}/questions`, the endpoint responds with the complete list of available categories `categories`, the current page size `curr_page_size`, the current category `current_category`, the total number of available pages `num_pages`, the current page number `page_num`, the set of questions `questions`, whether the retrival operation was successful `success` and the total number of questions available under the category `total_questions`.
+
+#### Sample URL and Response
+
 ```bash
  curl http://127.0.0.1:5000/questions?page=1
 ```
+
 ```javascript
 {
   "categories": {
@@ -195,9 +226,9 @@ curl http://127.0.0.1:5000/categories/4/questions
 
 ### DELETE `/questions/{integer}`
 
-* General
+- General
 
-* Sample URL
+- Sample URL
 
 ```bash
 curl -X DELETE http://127.0.0.1:5000/questions/33
@@ -212,9 +243,9 @@ curl -X DELETE http://127.0.0.1:5000/questions/33
 
 ### POST `/questions`
 
-* General
+- General
 
-* Sample URL
+- Sample URL
 
 ```bash
 curl -X POST -H 'Content-Type:application/json' -d '{"question":"Which actor has been killed by an Alien, a Terminator and a Predator?", "answer":"Bill Paxton", "category":5, "difficulty":5}' http://127.0.0.1:5000/questions
@@ -229,9 +260,9 @@ curl -X POST -H 'Content-Type:application/json' -d '{"question":"Which actor has
 
 ### POST `/questions/search`
 
-* General
+- General
 
-* Sample URL
+- Sample URL
 
 ```bash
 curl -X POST -H 'Content-Type:application/json' -d '{"searchTerm":"Terminator"}' http://127.0.0.1:5000/questions/se
@@ -265,13 +296,14 @@ arch
   "total_questions": 1
 }
 ```
+
 ### POST `/quizzes`
 
-* General
+- General
 
-* Sample URL
+- Sample URL
 
-``` bash
+```bash
  curl -X POST -H 'Content-Type:application/json' -d '{"quiz_category":{"type":"Entertainment","id":5}, "previous_questions":[4,2]}' http://127.0.0.1:5000/quizzes
 ```
 

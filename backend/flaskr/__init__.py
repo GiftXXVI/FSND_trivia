@@ -7,6 +7,7 @@ from questions_blueprint import questions_blueprint
 from quizzes_blueprint import quizzes_blueprint
 from models import setup_db, Question, Category, get_db
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
