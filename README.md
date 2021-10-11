@@ -54,7 +54,7 @@ There are no current plans for deployment as this is an academic project.
 The started code was provided by Udacity, but there are extensive modifications by Gift Chimphonda.
 
 #### Acknowledgements
-The flask documentation and numerous StackOverflow pages have helped me to dig myself out of multiple situations.
+The [flask documentation](https://flask.palletsprojects.com/en/2.0.x/) and numerous [StackOverflow](https://stackoverflow.com/) pages have helped me to dig myself out of multiple craters.
 
 ### Frontend
 
