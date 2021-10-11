@@ -68,6 +68,29 @@ class TriviaTestCase(unittest.TestCase):
             self.assertNotIn('categories', data.keys())
             self.assertEqual(data['message'], 'Not Found')
 
+    def test_create_category(self):
+        response = self.client().post('/categories', json={"type":"Food"})
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 200)
+
+        # test response body
+        self.assertEqual(data['success'], True)
+        self.assertIn('created', data.keys())
+
+    def test_create_category_empty_body(self):
+        response = self.client().post('/categories')
+        data = json.loads(response.data)
+
+        # test response code
+        self.assertEqual(response.status_code, 400)
+
+        # test response body
+        self.assertEqual(data['success'], False)
+        self.assertNotIn('created', data.keys())
+        self.assertEqual(data['message'], 'Bad Request')
+
     def test_get_paginated_questions(self):
         response = self.client().get('/questions')
         data = json.loads(response.data)
