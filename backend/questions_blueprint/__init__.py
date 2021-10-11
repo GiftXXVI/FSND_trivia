@@ -89,12 +89,13 @@ def create_question():
         answer = body.get('answer', None)
         difficulty = body.get('difficulty', None)
         category = body.get('category', None)
-        if question is None or answer is None or difficulty is None or category is None:
+        rating = body.get('rating', None)
+        if question is None or answer is None or difficulty is None or category is None or rating is None:
             abort(400)
         else:
             try:
                 question = Question(question=question, answer=answer,
-                                    difficulty=difficulty, category=category)
+                                    difficulty=difficulty, category=category, rating=rating)
                 question.insert()
                 question.refresh()
                 question.dispose()

@@ -3,6 +3,8 @@ from sqlalchemy import Column, String, Integer, create_engine
 from flask_sqlalchemy import SQLAlchemy
 import json
 
+from sqlalchemy.sql.schema import ForeignKey
+
 database_name = "trivia"
 database_path = "postgresql://{}:{}@{}/{}".format(
     "postgres", "postgres", "localhost:5432", database_name
@@ -47,14 +49,16 @@ class Question(db.Model):
     id = Column(Integer, primary_key=True)
     question = Column(String)
     answer = Column(String)
-    category = Column(String)
+    category = Column(Integer, ForeignKey('categories.id'),nullable=False)
     difficulty = Column(Integer)
+    rating = Column(Integer)
 
-    def __init__(self, question, answer, category, difficulty):
+    def __init__(self, question, answer, category, difficulty, rating):
         self.question = question
         self.answer = answer
         self.category = category
         self.difficulty = difficulty
+        self.rating = rating
 
     def insert(self):
         db.session.add(self)
@@ -73,7 +77,8 @@ class Question(db.Model):
             'question': self.question,
             'answer': self.answer,
             'category': self.category,
-            'difficulty': self.difficulty
+            'difficulty': self.difficulty,
+            'rating': self.rating
         }
 
     def rollback(self):
@@ -97,6 +102,7 @@ class Category(db.Model):
 
     id = Column(Integer, primary_key=True)
     type = Column(String)
+    questions = db.relationship('Question', backref='cat', lazy=True)
 
     def __init__(self, type):
         self.type = type
@@ -106,6 +112,10 @@ class Category(db.Model):
             'id': self.id,
             'type': self.type
         }
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
 
     def rollback(self):
         db.session.rollback()

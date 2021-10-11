@@ -29,9 +29,9 @@ class TriviaTestCase(unittest.TestCase):
             self.db.create_all()
 
         self.new_question = {'question': 'In what state of matter are atoms most tightly packed?',
-                             'answer': 'Solid', 'category': '1', 'difficulty': '2'}
+                             'answer': 'Solid', 'category': '1', 'difficulty': '2', "rating": 2}
         self.bad_cat_question = {'question': 'What is the nearest planet to the sun?',
-                                 'answer': 'Mercury', 'category': '100', 'difficulty': '2'}
+                                 'answer': 'Mercury', 'category': '100', 'difficulty': '2', "rating": 2}
         self.bad_question = {
             'question': 'Which of Newton\'s laws states that for every action, there\'s and equal and opposite reaction?', 'answer': 'The third law of motion'}
         self.valid_search = {'searchTerm': 'India'}

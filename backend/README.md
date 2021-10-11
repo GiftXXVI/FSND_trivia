@@ -65,6 +65,25 @@ curl http://127.0.0.1:5000/categories
 }
 ```
 
+### POST `/categories`
+
+#### General
+This endpoint is used to create a new category.
+##### Request Body
+The endpoint expects a json object with a `type` string representing the `type` attribute of the new category. 
+##### Response Body
+The endpoint responds with a json object with a `success` value of `true` indicating that the operation was a success and a `created` value reflecting the id of the category that has been created.
+### Sample URL:
+```bash
+curl -X POST -H 'Content-Type:application/json' -d '{"type":"Languages"}' http://127.0.0.1:5000/categories
+```
+```javascript
+{
+  "created": 7,
+  "success": true
+}
+```
+
 ### GET `/categories/{integer}/questions?page={integer}`
 
 #### General
@@ -106,28 +125,32 @@ curl http://127.0.0.1:5000/categories/4/questions?page=1
       "category": 4,
       "difficulty": 2,
       "id": 5,
-      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?"
+      "question": "Whose autobiography is entitled 'I Know Why the Caged Bird Sings'?",
+      "rating": 1
     },
     {
       "answer": "Muhammad Ali",
       "category": 4,
       "difficulty": 1,
       "id": 9,
-      "question": "What boxer's original name is Cassius Clay?"
+      "question": "What boxer's original name is Cassius Clay?",
+      "rating": 1
     },
     {
       "answer": "George Washington Carver",
       "category": 4,
       "difficulty": 2,
       "id": 12,
-      "question": "Who invented Peanut Butter?"
+      "question": "Who invented Peanut Butter?",
+      "rating": 1
     },
     {
       "answer": "Scarab",
       "category": 4,
       "difficulty": 4,
       "id": 23,
-      "question": "Which dung beetle was worshipped by the ancient Egyptians?"
+      "question": "Which dung beetle was worshipped by the ancient Egyptians?",
+      "rating": 1
     }
   ],
   "success": true,
@@ -174,74 +197,84 @@ Just like `/categories/{integer}/questions`, the endpoint responds with the comp
       "category": 1,
       "difficulty": 4,
       "id": 20,
-      "question": "What is the heaviest organ in the human body?"
+      "question": "What is the heaviest organ in the human body?",
+      "rating": 1
     },
     {
       "answer": "Alexander Fleming",
       "category": 1,
       "difficulty": 3,
       "id": 21,
-      "question": "Who discovered penicillin?"
+      "question": "Who discovered penicillin?",
+      "rating": 1
     },
     {
       "answer": "Blood",
       "category": 1,
       "difficulty": 4,
       "id": 22,
-      "question": "Hematology is a branch of medicine involving the study of what?"
+      "question": "Hematology is a branch of medicine involving the study of what?",
+      "rating": 1
     },
     {
       "answer": "Tendons",
       "category": 1,
       "difficulty": 4,
       "id": 25,
-      "question": "What tissues connect the muscles to the bones?"
+      "question": "What tissues connect the muscles to the bones?",
+      "rating": 1
     },
     {
       "answer": "Valentina Tereshkova",
       "category": 1,
       "difficulty": 5,
       "id": 32,
-      "question": "What is the name of the first woman in space?"
+      "question": "What is the name of the first woman in space?",
+      "rating": 1
     },
     {
       "answer": "Escher",
       "category": 2,
       "difficulty": 1,
       "id": 16,
-      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+      "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?",
+      "rating": 1
     },
     {
       "answer": "Mona Lisa",
       "category": 2,
       "difficulty": 3,
       "id": 17,
-      "question": "La Giaconda is better known as what?"
+      "question": "La Giaconda is better known as what?",
+      "rating": 1
     },
     {
       "answer": "One",
       "category": 2,
       "difficulty": 4,
       "id": 18,
-      "question": "How many paintings did Van Gogh sell in his lifetime?"
+      "question": "How many paintings did Van Gogh sell in his lifetime?",
+      "rating": 1
     },
     {
       "answer": "Jackson Pollock",
       "category": 2,
       "difficulty": 2,
       "id": 19,
-      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+      "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?",
+      "rating": 1
     },
     {
       "answer": "Lake Victoria",
       "category": 3,
       "difficulty": 2,
       "id": 13,
-      "question": "What is the largest lake in Africa?"
+      "question": "What is the largest lake in Africa?",
+      "rating": 1
     }
   ],
   "success": true,
-  "total_questions": 26
+  "total_questions": 27
 }
 ```
 
@@ -286,12 +319,12 @@ The endpoint responds with a json object with a `success` value of `true` indica
 #### Sample URL
 
 ```bash
-curl -X POST -H 'Content-Type:application/json' -d '{"question":"Which actor has been killed by an Alien, a Terminator and a Predator?", "answer":"Bill Paxton", "category":5, "difficulty":5}' http://127.0.0.1:5000/questions
+curl -X POST -H 'Content-Type:application/json' -d '{"question":"What is the name of the world’s largest ocean?", "answer":"Pacific", "category":5, "difficulty":5, "rating": 1}' http://127.0.0.1:5000/questions
 ```
 
 ```javascript
 {
-  "created": 36,
+  "created": 38,
   "success": true
 }
 ```
@@ -310,8 +343,7 @@ Just like `/questions/` and `/categories/{integer}/questions`, the endpoint resp
 #### Sample URL
 
 ```bash
-curl -X POST -H 'Content-Type:application/json' -d '{"searchTerm":"Terminator"}' http://127.0.0.1:5000/questions/se
-arch
+curl -X POST -H 'Content-Type:application/json' -d '{"searchTerm":"Terminator"}' http://127.0.0.1:5000/questions/search
 ```
 
 ```javascript
@@ -333,8 +365,9 @@ arch
       "answer": "Bill Paxton",
       "category": 5,
       "difficulty": 5,
-      "id": 36,
-      "question": "Which actor has been killed by an Alien, a Terminator and a Predator?"
+      "id": 37,
+      "question": "Which actor has been killed by an Alien, a Terminator and a Predator?",
+      "rating": 1
     }
   ],
   "success": true,
@@ -362,11 +395,12 @@ The endpoint responds with a question object, a `quiz_category_id` and a `succes
 ```javascript
 {
   "question": {
-    "answer": "Bill Paxton",
+    "answer": "Edward Scissorhands",
     "category": 5,
-    "difficulty": 5,
-    "id": 36,
-    "question": "Which actor has been killed by an Alien, a Terminator and a Predator?"
+    "difficulty": 3,
+    "id": 6,
+    "question": "What was the title of the 1990 fantasy directed by Tim Burton about a young man with multi-bladed appendages?",
+    "rating": 1
   },
   "quiz_category_id": 5,
   "success": true

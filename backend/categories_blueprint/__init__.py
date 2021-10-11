@@ -15,7 +15,6 @@ for all available categories.
 
 @categories_blueprint.route('/categories', methods=['GET'])
 def get_categories():
-    # try:
     categories = Category.query.order_by(Category.id).all()
     lcategories = len(categories)
     if lcategories == 0:
@@ -23,9 +22,31 @@ def get_categories():
     else:
         fcats = {cat.id: cat.type for cat in categories}
         return jsonify({"success": True, "categories": fcats})
-    # except:
-    #    abort(500)
 
+
+@categories_blueprint.route('/categories', methods=['POST'])
+def create_category():
+    body = request.get_json()
+    if body is None:
+        abort(400)
+    else:
+        cat_type = body.get('type', None)
+        if cat_type is None:
+            abort(400)
+        else:
+            try:
+                category = Category(type=cat_type)
+                category.insert()
+                category.refresh()
+                category.dispose()
+                return jsonify({
+                    "created": category.id,
+                    "success": True
+                })
+            except:
+                category.rollback()
+                category.dispose()
+                abort(422)
     '''
   @TODO:
   Create a GET endpoint to get questions based on category.
