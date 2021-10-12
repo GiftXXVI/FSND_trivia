@@ -368,7 +368,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertNotIn('categories', data.keys())
 
     def test_get_category_questions(self):
-        categories = Category.query.order_by(Category.id).all()
+        categories = Category.query.join('questions').order_by(Category.id).all()
         rand = choice([cat.id for cat in categories])
         response = self.client().get(f'/categories/{rand}/questions')
         data = json.loads(response.data)
@@ -404,7 +404,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertNotIn('categories', data.keys())
 
     def test_get_quizzes(self):
-        categories = Category.query.order_by(Category.id).all()
+        categories = Category.query.join('questions').order_by(Category.id).all()
         rand_cat = choice([cat.id for cat in categories])
 
         questions = Question.query.filter(

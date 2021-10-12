@@ -7,7 +7,7 @@ from models import Question
 QUESTIONS_PER_PAGE = 10
 
 
-def paginate_questions(page, questions):
+def paginate_questions(page, questions, category_id):
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
 
@@ -19,12 +19,20 @@ def paginate_questions(page, questions):
         search_term = body.get('searchTerm', None)
 
     if search_term is None:
-        pquestions = Question.query.order_by(Question.category, Question.id).limit(
-            QUESTIONS_PER_PAGE).offset(start).all()
+        if category_id is None:
+            pquestions = Question.query.order_by(Question.category, Question.id).limit(
+                QUESTIONS_PER_PAGE).offset(start).all()
+        else:
+            pquestions = Question.query.filter(Question.category == category_id).order_by(Question.category, Question.id).limit(
+                QUESTIONS_PER_PAGE).offset(start).all()
     else:
         fsearch = f'%{search_term}%'
-        pquestions = Question.query.filter(Question.question.ilike(
-            fsearch)).order_by(Question.category, Question.id).all()
+        if category_id is None:
+            pquestions = Question.query.filter(Question.question.ilike(
+                fsearch)).order_by(Question.category, Question.id).all()
+        else:
+            pquestions = Question.query.filter(Question.question.ilike(
+                fsearch), Question.category == category_id).order_by(Question.category, Question.id).all()
 
     fquestions = [question.format() for question in pquestions]
     lquestions = len(fquestions)
@@ -33,10 +41,10 @@ def paginate_questions(page, questions):
     return fquestions, lquestions, npages
 
 
-def prepare_questions(request, questions, lcategory):
-    page = request.args.get('page', 1, type=int)
+def prepare_questions(request, questions, lcategory, category_id=None):
+    page = abs(request.args.get('page', 1, type=int))
     paginated_questions, page_size, num_pages = paginate_questions(
-        page, questions)
+        page, questions, category_id)
 
     if page_size == 0:
         curr_cat = ''

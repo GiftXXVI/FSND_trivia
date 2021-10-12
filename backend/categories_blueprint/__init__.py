@@ -62,9 +62,9 @@ def get_cat_questions(category_id):
     questions = Question.query.filter(Question.category == category_id).count()
     categories = Category.query.order_by(Category.id).all()
     fcats = {cat.id: cat.type for cat in categories}
-    if len(questions) == 0:
+    if questions == 0:
         return abort(404)
     else:
         prepared_questions = prepare_questions(
-            request, questions, fcats)
+            request, questions, fcats, category_id)
         return prepared_questions

@@ -39,7 +39,11 @@ def get_quiz():
                 questions = Question.query.filter(
                     not_(Question.id.in_(previous_questions)), Question.category == category_id).all()
             if len(questions) == 0:
-                abort(404)
+                return jsonify({
+                    'success': True,
+                    'question': None,
+                    'quiz_category_id': quiz_category['id']
+                })
             else:
                 available_questions = [question.format()
                                        for question in questions]

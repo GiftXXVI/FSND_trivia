@@ -39,6 +39,11 @@ Both databases (`trivia` and `trivia_test`) can have their schema created and in
 ##### Installation
 To start the web API; make sure that the database service is running, navigate to the backend directory and run the following commands:
 ```bash
+export DB_NAME={database_name}
+export DB_USER={username}
+export DB_PASS={password}
+export DB_HOST={hostname}
+export DB_PORT={port_number}
 export FLASK_APP=flaskr
 export FLASK_ENV=development
 flask run
@@ -56,6 +61,11 @@ Unit tests have been defined inside the file backend/test_flaskr.py
 
 You should run the tests from the `./backend` directory using the following command to verify that everything has been installed correctly:
 ```bash
+export TEST_NAME={database_name}
+export TEST_USER={username}
+export TEST_PASS={password}
+export TEST_HOST={hostname}
+export TEST_PORT={port_number}
 python3 test_flaskr.py
 ```
 #### API Reference
