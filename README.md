@@ -14,14 +14,27 @@ The API is writted according to [pep8 guidelines](http://www.python.org/dev/peps
 Install all dependencies by running the following command from the `./backend` directory:
 
 ```bash
-pip install -r requirements.txt
+pip install aniso8601
+pip install click
+pip install Flask
+pip install Flask-Cors
+pip install Flask-RESTful
+pip install Flask-SQLAlchemy
+pip install itsdangerous
+pip install Jinja2
+pip install MarkupSafe
+pip install psycopg2-binary
+pip install pytz
+pip install six
+pip install SQLAlchemy
+pip install Werkzeug
 ```
-
+##### Databases
 The API depends on the presence of a `trivia` postgresql database, properly configured in the `models.py` file.
 
 Unit Tests depend on the presence of a `trivia_test` database, properly configured in the `test_flaskr.py` file.
 
-Both databases can have their schema created and initial data loaded by running the script `trivia.psql` against each database. 
+Both databases (`trivia` and `trivia_test`) can have their schema created and initial data loaded by running the script `trivia.psql` against each database. After running the script, run the migrations to update both databases (`trivia` and `trivia_test`) to the same version level as the application. 
 
 ##### Installation
 To start the web API; make sure that the database service is running, navigate to the backend directory and run the following commands:
