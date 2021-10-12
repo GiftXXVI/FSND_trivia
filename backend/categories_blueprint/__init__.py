@@ -59,8 +59,7 @@ def create_category():
 
 @categories_blueprint.route('/categories/<int:category_id>/questions', methods=['GET'])
 def get_cat_questions(category_id):
-    questions = Question.query.filter(Question.category == category_id).order_by(
-        Question.category, Question.id).all()
+    questions = Question.query.filter(Question.category == category_id).count()
     categories = Category.query.order_by(Category.id).all()
     fcats = {cat.id: cat.type for cat in categories}
     if len(questions) == 0:

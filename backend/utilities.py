@@ -1,5 +1,7 @@
 from flask import jsonify
 from math import ceil
+
+from flask import request
 from models import Question
 
 QUESTIONS_PER_PAGE = 10
@@ -9,8 +11,21 @@ def paginate_questions(page, questions):
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
 
-    pquestions = Question.query.order_by(Question.category, Question.id).limit(
-        QUESTIONS_PER_PAGE).offset(start).all()
+    body = request.get_json()
+
+    if body is None:
+        search_term = None
+    else:
+        search_term = body.get('searchTerm', None)
+
+    if search_term is None:
+        pquestions = Question.query.order_by(Question.category, Question.id).limit(
+            QUESTIONS_PER_PAGE).offset(start).all()
+    else:
+        fsearch = f'%{search_term}%'
+        pquestions = Question.query.filter(Question.question.ilike(
+            fsearch)).order_by(Question.category, Question.id).all()
+
     fquestions = [question.format() for question in pquestions]
     lquestions = len(fquestions)
     npages = ceil(questions/QUESTIONS_PER_PAGE)
