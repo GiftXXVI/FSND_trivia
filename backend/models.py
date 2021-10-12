@@ -5,9 +5,14 @@ import json
 
 from sqlalchemy.sql.schema import ForeignKey
 
-database_name = "trivia"
+database_name = os.getenv("DB_NAME")
+database_user = os.getenv("DB_USER")
+database_password = os.getenv("DB_PASS")
+database_host = os.getenv("DB_HOST")
+database_port = os.getenv("DB_PORT")
+database_host_port = f"{database_host}:{database_port}"
 database_path = "postgresql://{}:{}@{}/{}".format(
-    "postgres", "postgres", "localhost:5432", database_name
+    database_user, database_password, database_host_port, database_name
 )
 
 # flask db init
@@ -49,7 +54,7 @@ class Question(db.Model):
     id = Column(Integer, primary_key=True)
     question = Column(String)
     answer = Column(String)
-    category = Column(Integer, ForeignKey('categories.id'),nullable=False)
+    category = Column(Integer, ForeignKey('categories.id'), nullable=False)
     difficulty = Column(Integer)
     rating = Column(Integer)
 

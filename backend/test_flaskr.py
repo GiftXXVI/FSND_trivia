@@ -15,9 +15,14 @@ class TriviaTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        self.database_name = "trivia_test"
+        self.database_name = os.getenv("TEST_NAME")
+        self.database_user = os.getenv("TEST_USER")
+        self.database_password = os.getenv("TEST_PASS")
+        self.database_host = os.getenv("TEST_HOST")
+        self.database_port = os.getenv("TEST_PORT")
+        self.database_host_port = f"{self.database_host}:{self.database_port}"
         self.database_path = "postgresql://{}:{}@{}/{}".format(
-            "postgres", "postgres", "localhost:5432", self.database_name
+            self.database_user, self.database_password, self.database_host_port, self.database_name
         )
         setup_db(self.app, self.database_path)
 
@@ -69,7 +74,7 @@ class TriviaTestCase(unittest.TestCase):
             self.assertEqual(data['message'], 'Not Found')
 
     def test_create_category(self):
-        response = self.client().post('/categories', json={"type":"Food"})
+        response = self.client().post('/categories', json={"type": "Food"})
         data = json.loads(response.data)
 
         # test response code

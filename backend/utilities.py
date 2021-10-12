@@ -1,24 +1,26 @@
 from flask import jsonify
 from math import ceil
+from models import Question
 
 QUESTIONS_PER_PAGE = 10
+
 
 def paginate_questions(page, questions):
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
 
-    fquestions = [question.format() for question in questions]
-    pquestions = fquestions[start:end]
+    pquestions = Question.query.order_by(Question.category, Question.id).limit(
+        QUESTIONS_PER_PAGE).offset(start).all()
+    fquestions = [question.format() for question in pquestions]
     lquestions = len(fquestions)
-    plquestions = len(pquestions)
-    npages = ceil(lquestions/QUESTIONS_PER_PAGE)
+    npages = ceil(questions/QUESTIONS_PER_PAGE)
 
-    return pquestions, lquestions, plquestions, npages
+    return fquestions, lquestions, npages
 
 
 def prepare_questions(request, questions, lcategory):
     page = request.args.get('page', 1, type=int)
-    paginated_questions, length_questions, page_size, num_pages = paginate_questions(
+    paginated_questions, page_size, num_pages = paginate_questions(
         page, questions)
 
     if page_size == 0:
@@ -32,7 +34,7 @@ def prepare_questions(request, questions, lcategory):
         'page_num': page,
         'curr_page_size': page_size,
         'num_pages': num_pages,
-        'total_questions': length_questions,
+        'total_questions': questions,
         'questions': paginated_questions,
         'current_category': curr_cat,
         'categories': lcategory

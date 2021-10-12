@@ -22,20 +22,20 @@ Clicking on the page numbers should update the questions.
 
 @questions_blueprint.route('/questions', methods=['GET'])
 def get_questions():
-    try:
+    #try:
         questions = Question.query.order_by(
-            Question.category, Question.id).all()
+            Question.category, Question.id).count()
 
         categories = Category.query.order_by(Category.id).all()
         fcats = {cat.id: cat.type for cat in categories}
-        if len(questions) == 0:
+        if questions == 0:
             return abort(404)
         else:
             prepared_questions = prepare_questions(
-                request, questions, fcats)
+                request, questions,fcats)
             return prepared_questions
-    except:
-        abort(500)
+    #except:
+    #    abort(500)
 
 
 '''
