@@ -28,6 +28,7 @@ pip install pytz
 pip install six
 pip install SQLAlchemy
 pip install Werkzeug
+pip install Flask-Migrate
 ```
 ##### Databases
 The API depends on the presence of a `trivia` postgresql database, properly configured in the `models.py` file.
